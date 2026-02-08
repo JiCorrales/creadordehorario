@@ -89,12 +89,12 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse })
         </button>
       </div>
 
-      <div className="min-w-[800px] relative border rounded-lg overflow-hidden bg-white">
+      <div className="min-w-[800px] relative border border-gray-300 rounded-lg overflow-hidden bg-white">
         {/* Header Days */}
-        <div className="grid grid-cols-8 border-b bg-gray-50 sticky top-0 z-20">
-          <div className="p-2 border-r text-center font-semibold text-gray-600">Hora</div>
+        <div className="grid grid-cols-8 border-b border-gray-300 bg-gray-50 sticky top-0 z-20">
+          <div className="p-2 border-r border-gray-300 text-center font-semibold text-gray-700">Hora</div>
           {DAYS.map(day => (
-            <div key={day} className="p-2 border-r last:border-r-0 text-center font-semibold text-gray-600">
+            <div key={day} className="p-2 border-r border-gray-300 last:border-r-0 text-center font-semibold text-gray-700">
               {day}
             </div>
           ))}
@@ -104,17 +104,17 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse })
         <div className="relative" style={{ height: `${(END_HOUR - START_HOUR + 1) * HOUR_HEIGHT}px` }}>
           {/* Horizontal Hour Lines */}
           {hours.map(hour => (
-            <div
-              key={hour}
-              className="absolute w-full border-b border-gray-100 flex items-start"
+            <div 
+              key={hour} 
+              className="absolute w-full border-b border-gray-300 flex items-start"
               style={{ top: `${(hour - START_HOUR) * HOUR_HEIGHT}px`, height: `${HOUR_HEIGHT}px` }}
             >
-              <div className="w-[12.5%] text-xs text-gray-400 p-1 text-right pr-2">
+              <div className="w-[12.5%] text-xs text-gray-500 font-medium p-1 text-right pr-2">
                 {hour}:00
               </div>
               {/* Vertical lines for days */}
               {DAYS.map((_, i) => (
-                <div key={i} className="w-[12.5%] h-full border-r border-gray-100 last:border-r-0"></div>
+                <div key={i} className="w-[12.5%] h-full border-r border-gray-300 last:border-r-0"></div>
               ))}
             </div>
           ))}
