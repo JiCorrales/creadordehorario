@@ -4,6 +4,7 @@ import CourseForm from './components/CourseForm'
 import ScheduleView from './components/ScheduleView'
 import ScheduleManager from './components/ScheduleManager'
 import CourseTable from './components/CourseTable'
+import Modal from './components/Modal'
 import { useSchedule } from './hooks/useSchedule'
 import { Course } from './types'
 
@@ -60,8 +61,6 @@ function App() {
 
   const handleEditCourse = (course: Course) => {
     setCourseToEdit(course);
-    // Scroll to top to see the form
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleCancelEdit = () => {
@@ -101,7 +100,7 @@ function App() {
           </div>
         )}
 
-        <ScheduleManager 
+        <ScheduleManager
           schedules={schedules}
           currentScheduleId={currentScheduleId}
           onSwitchSchedule={setCurrentScheduleId}
@@ -113,22 +112,21 @@ function App() {
           <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
             {/* Left Column: Form */}
             <div className="xl:col-span-4 space-y-6">
-              <CourseForm 
-                onAddCourse={handleAddCourse} 
+              <CourseForm
+                onAddCourse={handleAddCourse}
                 onUpdateCourse={handleUpdateCourse}
-                courseToEdit={courseToEdit}
-                onCancelEdit={handleCancelEdit}
+                onCancelEdit={() => {}} // Not used in add mode
               />
             </div>
 
             {/* Right Column: Schedule View & Table */}
             <div className="xl:col-span-8 space-y-8">
-              <ScheduleView 
-                schedule={currentSchedule} 
+              <ScheduleView
+                schedule={currentSchedule}
                 onRemoveCourse={handleUnscheduleFromView}
               />
-              
-              <CourseTable 
+
+              <CourseTable
                 courses={currentSchedule.courses}
                 onToggleStatus={handleToggleStatus}
                 onDelete={removeCourse}
@@ -141,6 +139,22 @@ function App() {
             <p className="text-xl text-gray-500">Cargando o no hay horario seleccionado...</p>
           </div>
         )}
+
+        {/* Edit Modal */}
+        <Modal
+          isOpen={!!courseToEdit}
+          onClose={handleCancelEdit}
+          title="Editar Curso"
+        >
+          {courseToEdit && (
+            <CourseForm
+              onAddCourse={() => {}} // Not used in edit mode
+              onUpdateCourse={handleUpdateCourse}
+              onCancelEdit={handleCancelEdit}
+              courseToEdit={courseToEdit}
+            />
+          )}
+        </Modal>
       </div>
     </div>
   )

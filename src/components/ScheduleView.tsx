@@ -109,7 +109,7 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse })
               className="absolute w-full border-b border-gray-300 flex items-start"
               style={{ top: `${(hour - START_HOUR) * HOUR_HEIGHT}px`, height: `${HOUR_HEIGHT}px` }}
             >
-              <div className="w-[12.5%] text-xs text-gray-500 font-medium p-1 text-right pr-2">
+              <div className="w-[12.5%] text-xs text-gray-500 font-medium p-1 flex items-center justify-center h-full border-r border-gray-300">
                 {hour}:00
               </div>
               {/* Vertical lines for days */}

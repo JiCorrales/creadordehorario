@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Ensure inputs are visible in fullscreen */
+input, select, textarea {
+  @apply text-gray-800 bg-white;
+}
+
+:fullscreen input, :fullscreen select, :fullscreen textarea {
+  background-color: white;
+  color: black;
+}
+
+::backdrop {
+    background-color: white;
+}
