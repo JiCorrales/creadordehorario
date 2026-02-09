@@ -26,6 +26,10 @@ const COURSE_COLORS = [
   [200, 255, 255], // Cyan
   [255, 220, 200], // Orange
   [220, 200, 255], // Purple
+  [255, 218, 185], // Peach
+  [152, 251, 152], // PaleGreen
+  [135, 206, 250], // LightSkyBlue
+  [255, 240, 245], // LavenderBlush
 ];
 
 const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse }) => {
@@ -163,7 +167,12 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse })
     scheduledCourses.forEach((course, index) => {
         // Assign color based on index
         const color = COURSE_COLORS[index % COURSE_COLORS.length];
-        doc.setFillColor(color[0], color[1], color[2]);
+        // Ensure color is valid, fallback to light gray if undefined (should not happen with modulo)
+        if (color) {
+             doc.setFillColor(color[0], color[1], color[2]);
+        } else {
+             doc.setFillColor(230, 230, 230);
+        }
 
         course.sessions.forEach(session => {
             const dayIndex = DAYS.indexOf(session.day);
