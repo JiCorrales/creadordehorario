@@ -153,39 +153,26 @@ const TimeInput: React.FC<TimeInputProps> = ({
 
   // Ensure current hour is valid when constraints change
   useEffect(() => {
+    // Fix for race condition when loading existing data:
+    // If the incoming value prop is valid within the new constraints (hours),
+    // we should trust it and NOT force a change based on stale 'hour' state.
+    // The other useEffect will update 'hour' state to match 'value'.
+    if (value && value.includes(':')) {
+      const [h] = value.split(':');
+      if (hours.includes(h)) {
+        return;
+      }
+    }
+
     if (!hours.includes(hour)) {
        // If current hour is not in valid list, switch to the first valid one
        // But only if we have options.
        if (hours.length > 0) {
-           // If the value passed from props (e.g. 11:20) is valid but 'hour' state hasn't updated yet?
-           // Or if the hours array changed (min/max constraints).
-
-           // If we are loading an existing course, 'value' might be "11:20".
-           // 'hour' state should be "11".
-           // If 'minHour' is 7, hours includes "11".
-           // So this block shouldn't run.
-
-           // However, if we have a bug where 'hour' state is stuck at "07" while value is "11:20",
-           // and "07" is valid, this won't run.
-
-           // The issue described is: "field shows incorrect 9:00".
-           // This suggests the useEffect[value] isn't updating the state correctly,
-           // OR this useEffect is overwriting it.
-
-           // Let's add a check: if the hour from 'value' prop is valid in 'hours', we should prefer that.
-           // The useEffect[value] sets 'hour'.
-           // This useEffect depends on [hours, hour].
-
-           // If minTime changes (e.g. StartTime changed), 'hours' array updates.
-           // If current 'hour' is now invalid, we reset it.
-
-           // We should ensure we don't accidentally reset valid hours.
-
            setHour(hours[0]);
            onChange(`${hours[0]}:${minute}`);
        }
     }
-  }, [hours, hour, minute, onChange]);
+  }, [hours, hour, minute, onChange, value]);
 
   return (
     <div className={`flex flex-col relative ${className || ''}`}>

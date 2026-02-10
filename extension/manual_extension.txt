@@ -1,0 +1,22 @@
+RESUMEN DE LA EXTENSIÓN "EXPORTADOR DE CURSOS"
+==============================================
+
+¿QUÉ ES?
+Es una herramienta complementaria para el navegador Google Chrome (y compatibles como Edge o Brave) diseñada para facilitar la importación de tus cursos del TEC al Creador de Horarios.
+
+¿QUÉ PROBLEMA RESUELVE?
+Por seguridad, los navegadores impiden que el Creador de Horarios acceda directamente a tu sesión de matrícula del TEC. Esta extensión actúa como un puente seguro autorizado por ti.
+
+¿QUÉ HACE EXACTAMENTE?
+1. Se activa únicamente cuando entras a la página de matrícula del TEC (tec-appsext.itcr.ac.cr).
+2. Lee la información de los cursos que se muestran en pantalla (nombres, horarios, profesores, grupos).
+3. Copia todo ese código al portapapeles de tu computadora con un solo clic, sin guardar nada en ningún servidor externo.
+
+¿CÓMO SE USA?
+1. Entra a la página de matrícula del TEC y busca tus cursos.
+2. Haz clic en el ícono de la extensión (cuadro azul) en la barra de tu navegador.
+3. Presiona el botón "Copiar Datos al Portapapeles".
+4. Ve al Creador de Horarios -> Importar -> Pegar Código -> Ctrl+V.
+
+PRIVACIDAD
+La extensión funciona 100% local en tu navegador. No envía tus datos a nadie; solo los mueve de la pestaña del TEC a tu portapapeles para que tú los uses.

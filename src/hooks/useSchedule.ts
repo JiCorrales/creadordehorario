@@ -128,6 +128,20 @@ export const useSchedule = () => {
     }));
   };
 
+  const addCourses = (newCourses: Course[]) => {
+    if (!currentScheduleId) return;
+
+    setSchedules(schedules.map(s => {
+      if (s.id === currentScheduleId) {
+        return {
+          ...s,
+          courses: [...s.courses, ...newCourses]
+        };
+      }
+      return s;
+    }));
+  };
+
   const updateCourse = (updatedCourse: Course) => {
     if (!currentScheduleId) return;
 
@@ -195,6 +209,31 @@ export const useSchedule = () => {
     }));
   };
 
+  const importCourses = (sourceScheduleId: string) => {
+    if (!currentScheduleId) return;
+
+    const sourceSchedule = schedules.find(s => s.id === sourceScheduleId);
+    if (!sourceSchedule) return;
+
+    const newCourses = sourceSchedule.courses.map(c => ({
+        ...c,
+        id: generateId(), // Regenerate ID to avoid conflicts if we import multiple times or edit independently
+        isScheduled: false, // Import as pending
+        // Regenerate session IDs too
+        sessions: c.sessions.map(s => ({ ...s, id: generateId() }))
+    }));
+
+    setSchedules(schedules.map(s => {
+        if (s.id === currentScheduleId) {
+            return {
+                ...s,
+                courses: [...s.courses, ...newCourses]
+            };
+        }
+        return s;
+    }));
+  };
+
   return {
     schedules,
     currentSchedule,
@@ -205,6 +244,8 @@ export const useSchedule = () => {
     addCourse,
     removeCourse,
     updateCourse,
-    toggleCourseStatus
+    toggleCourseStatus,
+    importCourses,
+    addCourses
   };
 };

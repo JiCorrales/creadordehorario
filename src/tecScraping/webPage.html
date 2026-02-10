@@ -1,0 +1,2055 @@
+<body>
+  <form
+    method="post"
+    action="./frmMatricula.aspx"
+    onkeypress="javascript:return WebForm_FireDefaultButton(event, 'ctl00_btnDisableEnter')"
+    id="aspnetForm"
+  >
+    <div class="aspNetHidden">
+      <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+      <input
+        type="hidden"
+        name="__EVENTARGUMENT"
+        id="__EVENTARGUMENT"
+        value=""
+      />
+      <input
+        type="hidden"
+        name="__VIEWSTATE"
+        id="__VIEWSTATE"
+        value="/wEPDwULLTEwMDUyNjYzMjgPZBYCZg9kFgICAw9kFgQCAQ8PFgIeBFRleHQFHEpPU0UgSVNBQUMgQ09SUkFMRVMgQ0FTQ0FOVEVkZAIDDw8WAh8ABQoyMDIzMTcyNTA4ZGQYAQUeX19Db250cm9sc1JlcXVpcmVQb3N0QmFja0tleV9fFgEFGWN0bDAwJGJ0blNpZ25PdXRNYXRyaWN1bGGNlEC5CAVBp9StWRr6MFc2rXFXDPgx33mqK47/kGiSYA=="
+      />
+    </div>
+
+    <script type="text/javascript">
+      //<![CDATA[
+      var theForm = document.forms["aspnetForm"];
+      if (!theForm) {
+        theForm = document.aspnetForm;
+      }
+      function __doPostBack(eventTarget, eventArgument) {
+        if (!theForm.onsubmit || theForm.onsubmit() != false) {
+          theForm.__EVENTTARGET.value = eventTarget;
+          theForm.__EVENTARGUMENT.value = eventArgument;
+          theForm.submit();
+        }
+      }
+      //]]>
+    </script>
+
+    <script
+      src="/Matricula/WebResource.axd?d=mV_iMKHJkWHaie46fSG6QMfxU2VkgLJKPwK9TQhk3rd3rzruu5XURLTIc_xGISWALYPSdQrct7sGPxhjTOVesGkNg-JjAk35Y6QWa3Bnx_s1&amp;t=638901555720898773"
+      type="text/javascript"
+    ></script>
+
+    <script
+      src="/Matricula/WebResource.axd?d=L__rDz6btSxwNoIanIAoNuewqma4SjILAVpjEQiiOxJnV7bCC_ruXhe3gMOrwYoyWMnFfgR4Z3g6-f2gZWMtJKrI99-44hBcztkAJ280NuQ1&amp;t=638901555720898773"
+      type="text/javascript"
+    ></script>
+    <div class="aspNetHidden">
+      <input
+        type="hidden"
+        name="__VIEWSTATEGENERATOR"
+        id="__VIEWSTATEGENERATOR"
+        value="60A2645A"
+      />
+      <input
+        type="hidden"
+        name="__EVENTVALIDATION"
+        id="__EVENTVALIDATION"
+        value="/wEdAAPnhBksLifsyrENkD90AUvMq6188U0cmlH75wl7qSpsdpm11HL07ND8cqrNmrEbj3Brq4V5M85jo5jwdilCFlzLOEy0/d095Tu6CAH/sY+TUA=="
+      />
+    </div>
+    <div class="encabezado">
+      <div class="divUsuario">
+        <table>
+          <tbody>
+            <tr>
+              <td rowspan="3">
+                <img
+                  src="./images/user.png"
+                  id="imgEstudiante"
+                  class="imgUsr"
+                  alt="Foto del estudiante"
+                />
+              </td>
+              <td>
+                <span id="ctl00_lblNombre" class="text12titulos cblock cUsuario"
+                  >JOSE ISAAC CORRALES CASCANTE</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span id="ctl00_lblCarne" class="text12titulos cblock cUsuario"
+                  >2023172508</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="contentMenuClick">
+                  <img
+                    src="images/Menu.png"
+                    id="imgShowMenu"
+                    class="imgMenu"
+                    alt="Menú"
+                  />
+                  <a class="text cUsuario">Opciones</a>
+                  <img
+                    src="images/flecha_dropdown-menu.png"
+                    id="img2"
+                    class="imgMenuFlecha"
+                    alt="Menú"
+                  />
+                </div>
+                <div
+                  class="ui-widget ui-corner-all contentMenu"
+                  style="display: none"
+                >
+                  <ul>
+                    <li title="Muestra las convocatorias disponibles" id="Li1">
+                      <img
+                        src="images/Menu-2.png"
+                        id="img4"
+                        class="imgMenu"
+                        alt="Menú"
+                      />
+                      <a class="text cUsuario">Opciones</a>
+                      <img
+                        src="images/flecha_dropdown-menu-2.png"
+                        id="img5"
+                        class="imgMenuFlecha"
+                        alt="Menú"
+                      />
+                    </li>
+
+                    <li
+                      title="Muestra las Convocatorias Disponibles"
+                      id="subMConvocatoria"
+                    >
+                      Matrículas Disponibles
+                    </li>
+                    <li
+                      title="Consultar el Historia Académico"
+                      id="subCurriculum"
+                    >
+                      Mi Historial Académico
+                    </li>
+                    <li
+                      title="Permite consultar requisitos pendientes con el TEC"
+                      id="subMorosidad"
+                    >
+                      Requisitos Pendientes
+                    </li>
+
+                    <li title="Consulta tu PIN" id="subPin">Código de PIN</li>
+                    <li title="Ayuda" id="subAyuda">Ayuda</li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="divContentCentral">
+        <div class="divHora">
+          <label class="cHorario text"> Hora</label>
+          <div class="divDate cHorario">
+            <span id="shora">03</span>:<span id="sminutos">26</span>:<span
+              id="ssegundos"
+              >34</span
+            >
+          </div>
+          <label class="cHorario text" id="lblFecha"> Fecha</label>
+          <div id="divFecha" class="divDate cHorario">10 Feb 2026</div>
+        </div>
+        <div class="divCitas cCitasNo">
+          <label id="lblCitaMatricula">No está en su Cita de Matrícula</label>
+        </div>
+      </div>
+      <div class="divCierreSesion">
+        <div class="subDivCerrarSesion">
+          <input
+            type="submit"
+            name="ctl00$btnDisableEnter"
+            value=""
+            onclick="return false;"
+            id="ctl00_btnDisableEnter"
+            style="display: none"
+            class="ui-button ui-widget ui-state-default ui-corner-all"
+            role="button"
+          />
+
+          <input
+            type="image"
+            name="ctl00$btnSignOutMatricula"
+            id="ctl00_btnSignOutMatricula"
+            title="Cerrar Sesión"
+            class="imgSalir"
+            usesubmitbehavior="false"
+            src="images/Salir.png"
+            alt="Salir"
+          />
+
+          <span>Salir</span>
+        </div>
+
+        <div class="subDivInforme">
+          <img
+            src="images/Mi-informe.png"
+            id="img3"
+            alt="Consultar Informe Matricula"
+          />
+          <span>Mi Informe</span>
+        </div>
+        <div class="subDivHorario">
+          <img src="images/Mi-horario.png" id="img1" alt="Consultar Horario" />
+          <span>Mi Horario</span>
+        </div>
+      </div>
+      <div class="citaIndicador citaIndicadorNo"></div>
+    </div>
+    <div class="divTitulomatricular"><span>Sistema de Matrícula</span></div>
+    <div class="content" style="height: 761px">
+      <div class="HeadCursos">
+        <table id="tHeaderCursos">
+          <thead>
+            <tr>
+              <td class="colInd center"></td>
+              <td class="colCodigo center">Código</td>
+              <td class="colMateria">Materia</td>
+              <td class="colCreditos center">Créditos</td>
+              <td class="colGrupo center">Grupo</td>
+              <td class="colError center"></td>
+              <td class="colMatricula center">Curso Matriculado</td>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <div class="BodyCursos" style="max-height: 756px; width: 1014px">
+        <table
+          id="tBodyCursos"
+          class="table table-condensed"
+          style="border-collapse: collapse; max-height: 756px; width: 1014px"
+        >
+          <tbody>
+            <tr id="CI1230" class="tdSelected">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">CI1230</td>
+              <td class="colMateria">
+                <span id="nombreCI1230">Inglés I</span>
+              </td>
+              <td class="colCreditos center">2</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_CI1230"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorCI1230"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgCI1230"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHCI1230" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHCI1230">
+                  <table class="tHorariosHeader">
+                    <thead>
+                      <tr>
+                        <td class="colHoSede">Sede</td>
+                        <td class="colHoGrupo">Grupo</td>
+                        <td class="colHoHorario">Horario - Aula</td>
+                        <td class="colHoProfesor">Profesor(es)</td>
+                        <td class="colHoCupo">
+                          Cupo
+                          <img
+                            id="cupoupd_CI1230"
+                            src="images/refresh.png"
+                            class="imgUpdCupo"
+                            title="Actualizar Cupo"
+                          />
+                        </td>
+                        <td class="colHoReservado">Reservado</td>
+                        <td class="colHoEstado">Estado</td>
+                        <td class="colHoMatricular"></td>
+                        <td class="colSuscribirse">Suscripcion</td>
+                      </tr>
+                    </thead>
+                  </table>
+                  <div class="cdivHorariosBody">
+                    <table class="tableHorarios">
+                      <tbody id="bodyTableHorarios_CI1230">
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO CENTRAL CARTAGO
+                          </td>
+                          <td class="colHoGrupo center">1</td>
+                          <td class="colHoHorario">
+                            L 07:30-10:20<br />Aula No Disponible<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            ALBERTAZZI OSORIO SONIA<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI12301">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Virtual</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_1"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','1');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO CENTRAL CARTAGO
+                          </td>
+                          <td class="colHoGrupo center">2</td>
+                          <td class="colHoHorario">
+                            K 07:30-10:20<br />Aula No Disponible<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            HERRERA JIMENEZ INGRID<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI12302">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Virtual</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_2"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','2');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO CENTRAL CARTAGO
+                          </td>
+                          <td class="colHoGrupo center">3</td>
+                          <td class="colHoHorario">
+                            K 09:30-12:20<br />Aula No Disponible<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            MURILLO ESCALANTE ROCIO<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI12303">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Virtual</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_3"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','3');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO CENTRAL CARTAGO
+                          </td>
+                          <td class="colHoGrupo center">4</td>
+                          <td class="colHoHorario">
+                            M 07:30-10:20<br />Aula No Disponible<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            KENNEDY RUSSELL ANA<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI12304">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Virtual</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_4"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','4');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO CENTRAL CARTAGO
+                          </td>
+                          <td class="colHoGrupo center">5</td>
+                          <td class="colHoHorario">
+                            M 13:00-15:50<br />Aula No Disponible<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            KENNEDY RUSSELL ANA<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI12305">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Virtual</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_5"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','5');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO CENTRAL CARTAGO
+                          </td>
+                          <td class="colHoGrupo center">6</td>
+                          <td class="colHoHorario">
+                            K 15:00-17:50<br />Aula No Disponible<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            MURILLO ESCALANTE ROCIO<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI12306">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Virtual</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_6"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','6');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO CENTRAL CARTAGO
+                          </td>
+                          <td class="colHoGrupo center">7</td>
+                          <td class="colHoHorario">
+                            M 09:30-12:20<br />Aula No Disponible<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            ALBERTAZZI OSORIO SONIA<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI12307">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Virtual</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_7"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','7');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO CENTRAL CARTAGO
+                          </td>
+                          <td class="colHoGrupo center">8</td>
+                          <td class="colHoHorario">
+                            M 18:00-20:50<br />Aula No Disponible<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            RIVERA VEGA KATERINE<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI12308">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Virtual</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_8"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','8');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO CENTRAL CARTAGO
+                          </td>
+                          <td class="colHoGrupo center">9</td>
+                          <td class="colHoHorario">
+                            J 09:30-12:20<br />Aula No Disponible<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            MOLINA VILLALOBOS TANIA<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI12309">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Virtual</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_9"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','9');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO CENTRAL CARTAGO
+                          </td>
+                          <td class="colHoGrupo center">10</td>
+                          <td class="colHoHorario">
+                            J 18:00-20:50<br />Aula No Disponible<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            KENNEDY RUSSELL ANA<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI123010">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Virtual</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_10"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','10');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO CENTRAL CARTAGO
+                          </td>
+                          <td class="colHoGrupo center">11</td>
+                          <td class="colHoHorario">
+                            V 13:00-15:50<br />Aula No Disponible<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            HERRERA JIMENEZ INGRID<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI123011">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Virtual</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_11"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','11');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO LOCAL SAN JOSE
+                          </td>
+                          <td class="colHoGrupo center">40</td>
+                          <td class="colHoHorario">
+                            K 09:30-12:20<br />J06-0101<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            MOLINA VILLALOBOS TANIA<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI123040">10</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Regular</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_40"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','40');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO LOCAL SAN CARLOS
+                          </td>
+                          <td class="colHoGrupo center">50</td>
+                          <td class="colHoHorario">
+                            M 08:50-11:30<br />A-08<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            FLORES CALDERON ARDUI<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI123050">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Regular</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_50"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','50');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO LOCAL SAN CARLOS
+                          </td>
+                          <td class="colHoGrupo center">51</td>
+                          <td class="colHoHorario">
+                            M 12:30-15:10<br />A-09<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            VILLEGAS SALAS SONIA<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI123051">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Regular</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_51"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','51');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO LOCAL SAN CARLOS
+                          </td>
+                          <td class="colHoGrupo center">52</td>
+                          <td class="colHoHorario">
+                            K 12:30-15:10<br />A-07<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            FLORES CALDERON ARDUI<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI123052">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Regular</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_52"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','52');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO LOCAL SAN CARLOS
+                          </td>
+                          <td class="colHoGrupo center">53</td>
+                          <td class="colHoHorario">
+                            K 08:50-11:30<br />A-09<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            VINDAS CARMONA CINTHIA JAZMIN<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI123053">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Regular</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_53"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','53');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">CENTRO ACADEMICO DE LIMON</td>
+                          <td class="colHoGrupo center">60</td>
+                          <td class="colHoHorario">
+                            M 09:30-12:20<br />L-07<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            BRENES ROJAS LEONARDO<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI123060">17</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Regular</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_60"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','60');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CENTRO ACADEMICO DE ALAJUELA
+                          </td>
+                          <td class="colHoGrupo center">85</td>
+                          <td class="colHoHorario">
+                            L 09:00-11:50<br />UTN-0601<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            SOLANO SOLANO JOSE EDUARDO<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoCI123085">23</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Regular</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_CI1230_85"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('CI1230','85');"
+                            />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr id="IC3101">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">IC3101</td>
+              <td class="colMateria">
+                <span id="nombreIC3101">Arquitectura de computadores</span>
+              </td>
+              <td class="colCreditos center">4</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_IC3101"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value="3"
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorIC3101"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgIC3101"
+                  src="images/registered_nombre.png"
+                  class="imgVerticalMiddle ccmat"
+                  title="Curso Matriculado"
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHIC3101" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHIC3101"></div>
+              </td>
+            </tr>
+            <tr id="IC4302" class="">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/openlevel.png"
+                  title="Ocultar Grupos"
+                />
+              </td>
+              <td class="colCodigo center">IC4302</td>
+              <td class="colMateria">
+                <span id="nombreIC4302">Bases de datos II</span>
+              </td>
+              <td class="colCreditos center">3</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_IC4302"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value="1"
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorIC4302"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgIC4302"
+                  src="images/registered_nombre.png"
+                  class="imgVerticalMiddle ccmat"
+                  title="Curso Matriculado"
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHIC4302" style="display: table-row">
+              <td colspan="7">
+                <div class="divHorario" id="divHIC4302">
+                  <table class="tHorariosHeader">
+                    <thead>
+                      <tr>
+                        <td class="colHoSede">Sede</td>
+                        <td class="colHoGrupo">Grupo</td>
+                        <td class="colHoHorario">Horario - Aula</td>
+                        <td class="colHoProfesor">Profesor(es)</td>
+                        <td class="colHoCupo">
+                          Cupo
+                          <img
+                            id="cupoupd_IC4302"
+                            src="images/refresh.png"
+                            class="imgUpdCupo"
+                            title="Actualizar Cupo"
+                          />
+                        </td>
+                        <td class="colHoReservado">Reservado</td>
+                        <td class="colHoEstado">Estado</td>
+                        <td class="colHoMatricular"></td>
+                        <td class="colSuscribirse">Suscripcion</td>
+                      </tr>
+                    </thead>
+                  </table>
+                  <div class="cdivHorariosBody">
+                    <table class="tableHorarios">
+                      <tbody id="bodyTableHorarios_IC4302">
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO CENTRAL CARTAGO
+                          </td>
+                          <td class="colHoGrupo center">1</td>
+                          <td class="colHoHorario">
+                            K 17:00-18:50<br />B3-07<br />V 17:00-18:50<br />B3-07<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            CAMPOS ARAYA GERARDO NEREO<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoIC43021">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Semipresencial</td>
+                          <td class="colHoMatricular center">
+                            <img
+                              id="IC4302_1"
+                              class="cBtnMat_IC4302 imgMatriculaGrupo cImgMatriculado"
+                              src="images/registered.png"
+                              title="Matricular"
+                              tittle="Eliminar Grupo."
+                              style="cursor: pointer"
+                            />
+                          </td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_IC4302_1"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('IC4302','1');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO CENTRAL CARTAGO
+                          </td>
+                          <td class="colHoGrupo center">2</td>
+                          <td class="colHoHorario">
+                            K 19:00-20:50<br />B3-01<br />J 19:00-20:50<br />B3-01<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            OBANDO RODRIGUEZ KENNETH<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoIC43022">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Semipresencial</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_IC4302_2"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('IC4302','2');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CENTRO ACADEMICO DE ALAJUELA
+                          </td>
+                          <td class="colHoGrupo center">20</td>
+                          <td class="colHoHorario">
+                            K 09:00-10:50<br />UTN-0110<br />J 09:00-10:50<br />UTN-0110<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            MORA CROSS MARIA AUXILIADORA<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoIC430220">7</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Regular</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_IC4302_20"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('IC4302','20');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO LOCAL SAN JOSE
+                          </td>
+                          <td class="colHoGrupo center">40</td>
+                          <td class="colHoHorario">
+                            K 13:00-14:50<br />J06-0102<br />J 13:00-14:50<br />J06-0102<br />
+                          </td>
+                          <td class="colHoProfesor">
+                            HERNANDEZ BONILLA ERICK<br />
+                          </td>
+                          <td class="colHoCupo center">
+                            <span id="cupoIC430240">17</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Semipresencial</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_IC4302_40"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('IC4302','40');"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="colHoSede">
+                            CAMPUS TECNOLOGICO LOCAL SAN CARLOS
+                          </td>
+                          <td class="colHoGrupo center">50</td>
+                          <td class="colHoHorario">
+                            J 12:30-16:05<br />LAB-01<br />
+                          </td>
+                          <td class="colHoProfesor">ARCE CERNA GUIDO<br /></td>
+                          <td class="colHoCupo center">
+                            <span id="cupoIC430250">0</span>
+                          </td>
+                          <td class="colHoReservado center">Sí</td>
+                          <td class="colHoEstado center">Regular</td>
+                          <td class="colHoMatricular center"></td>
+                          <td class="suscribir center">
+                            <img
+                              id="ReloadButton_IC4302_50"
+                              src="chrome-extension://anckackaffdfaemakjccbfmdhglbkjbn/ReloadSingle.png "
+                              onclick="agregarSuscripcion('IC4302','50');"
+                            />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr id="IC4810">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">IC4810</td>
+              <td class="colMateria">
+                <span id="nombreIC4810">Administración de proyectos</span>
+              </td>
+              <td class="colCreditos center">4</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_IC4810"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value="2"
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorIC4810"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgIC4810"
+                  src="images/registered_nombre.png"
+                  class="imgVerticalMiddle ccmat"
+                  title="Curso Matriculado"
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHIC4810" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHIC4810"></div>
+              </td>
+            </tr>
+            <tr id="IC6821">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">IC6821</td>
+              <td class="colMateria">
+                <span id="nombreIC6821">Diseño de software</span>
+              </td>
+              <td class="colCreditos center">4</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_IC6821"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value="2"
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorIC6821"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgIC6821"
+                  src="images/registered_nombre.png"
+                  class="imgVerticalMiddle ccmat"
+                  title="Curso Matriculado"
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHIC6821" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHIC6821"></div>
+              </td>
+            </tr>
+            <tr id="IC8056">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">IC8056</td>
+              <td class="colMateria">
+                <span id="nombreIC8056">Visualización de información</span>
+              </td>
+              <td class="colCreditos center">3</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_IC8056"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorIC8056"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgIC8056"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHIC8056" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHIC8056"></div>
+              </td>
+            </tr>
+            <tr id="IC8058">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">IC8058</td>
+              <td class="colMateria">
+                <span id="nombreIC8058"
+                  >Sistemas de información geográfica</span
+                >
+              </td>
+              <td class="colCreditos center">3</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_IC8058"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorIC8058"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgIC8058"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHIC8058" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHIC8058"></div>
+              </td>
+            </tr>
+            <tr id="IC8076">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">IC8076</td>
+              <td class="colMateria">
+                <span id="nombreIC8076">Introducción al análisis de datos</span>
+              </td>
+              <td class="colCreditos center">3</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_IC8076"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorIC8076"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgIC8076"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHIC8076" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHIC8076"></div>
+              </td>
+            </tr>
+            <tr id="IC8078">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">IC8078</td>
+              <td class="colMateria">
+                <span id="nombreIC8078"
+                  >Almacenes de datos y procesamiento OLAP</span
+                >
+              </td>
+              <td class="colCreditos center">3</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_IC8078"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorIC8078"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgIC8078"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHIC8078" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHIC8078"></div>
+              </td>
+            </tr>
+            <tr id="MA2404">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">MA2404</td>
+              <td class="colMateria">
+                <span id="nombreMA2404">Probabilidades</span>
+              </td>
+              <td class="colCreditos center">4</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_MA2404"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value="3"
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorMA2404"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgMA2404"
+                  src="images/registered_nombre.png"
+                  class="imgVerticalMiddle ccmat"
+                  title="Curso Matriculado"
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHMA2404" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHMA2404"></div>
+              </td>
+            </tr>
+            <tr id="SE1101">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">SE1101</td>
+              <td class="colMateria">
+                <span id="nombreSE1101">Artes dramáticas</span>
+              </td>
+              <td class="colCreditos center">0</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_SE1101"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorSE1101"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgSE1101"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHSE1101" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHSE1101"></div>
+              </td>
+            </tr>
+            <tr id="SE1102">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">SE1102</td>
+              <td class="colMateria">
+                <span id="nombreSE1102">Acción social</span>
+              </td>
+              <td class="colCreditos center">0</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_SE1102"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorSE1102"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgSE1102"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHSE1102" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHSE1102"></div>
+              </td>
+            </tr>
+            <tr id="SE1103">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">SE1103</td>
+              <td class="colMateria"><span id="nombreSE1103">Danza</span></td>
+              <td class="colCreditos center">0</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_SE1103"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorSE1103"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgSE1103"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHSE1103" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHSE1103"></div>
+              </td>
+            </tr>
+            <tr id="SE1104">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">SE1104</td>
+              <td class="colMateria">
+                <span id="nombreSE1104">Artes visuales</span>
+              </td>
+              <td class="colCreditos center">0</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_SE1104"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorSE1104"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgSE1104"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHSE1104" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHSE1104"></div>
+              </td>
+            </tr>
+            <tr id="SE1105">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">SE1105</td>
+              <td class="colMateria">
+                <span id="nombreSE1105">Artes musicales</span>
+              </td>
+              <td class="colCreditos center">0</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_SE1105"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorSE1105"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgSE1105"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHSE1105" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHSE1105"></div>
+              </td>
+            </tr>
+            <tr id="SE1106">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">SE1106</td>
+              <td class="colMateria">
+                <span id="nombreSE1106">Apreciación literaria</span>
+              </td>
+              <td class="colCreditos center">0</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_SE1106"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorSE1106"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgSE1106"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHSE1106" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHSE1106"></div>
+              </td>
+            </tr>
+            <tr id="SE1107">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">SE1107</td>
+              <td class="colMateria">
+                <span id="nombreSE1107">Apreciación de cine</span>
+              </td>
+              <td class="colCreditos center">0</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_SE1107"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorSE1107"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgSE1107"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHSE1107" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHSE1107"></div>
+              </td>
+            </tr>
+            <tr id="SE1109">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">SE1109</td>
+              <td class="colMateria">
+                <span id="nombreSE1109">Dinámica de la cultura</span>
+              </td>
+              <td class="colCreditos center">0</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_SE1109"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorSE1109"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgSE1109"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHSE1109" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHSE1109"></div>
+              </td>
+            </tr>
+            <tr id="SE1111">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">SE1111</td>
+              <td class="colMateria">
+                <span id="nombreSE1111">Expresión corporal</span>
+              </td>
+              <td class="colCreditos center">0</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_SE1111"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorSE1111"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgSE1111"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHSE1111" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHSE1111"></div>
+              </td>
+            </tr>
+            <tr id="SE2110">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">SE2110</td>
+              <td class="colMateria">
+                <span id="nombreSE2110">Apreciación musical</span>
+              </td>
+              <td class="colCreditos center">0</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_SE2110"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorSE2110"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgSE2110"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHSE2110" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHSE2110"></div>
+              </td>
+            </tr>
+            <tr id="SE2111">
+              <td class="colInd center">
+                <img
+                  class="imgAccordion"
+                  src="images/level.png"
+                  title="Ver Grupos"
+                />
+              </td>
+              <td class="colCodigo center">SE2111</td>
+              <td class="colMateria">
+                <span id="nombreSE2111">Técnica del canto</span>
+              </td>
+              <td class="colCreditos center">0</td>
+              <td class="colGrupo center">
+                <input
+                  id="grupo_SE2111"
+                  type="text"
+                  class="txtGrupoMatriculado"
+                  value=""
+                  disabled="disabled"
+                />
+              </td>
+              <td class="colError center">
+                <img
+                  id="imgErrorSE2111"
+                  src="images/warning.png"
+                  class="imgVerticalMiddle imgErrorMatricula"
+                  title="click para ver el error."
+                  style="display: none"
+                />
+              </td>
+              <td class="colMatricula center">
+                <img
+                  id="imgSE2111"
+                  src=""
+                  class="imgVerticalMiddle imghide"
+                  title=""
+                />
+              </td>
+            </tr>
+            <tr class="Rowaccordion" id="trHSE2111" style="display: none">
+              <td colspan="7">
+                <div class="divHorario" id="divHSE2111"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="contentEmail">
+        <img
+          src="images/mail_logo.png"
+          id="imgEmail"
+          alt="Consulta contactos del Departamento de Admisión y Registro"
+        />
+        <span>Contactos Admisión y Registro</span>
+      </div>
+      <div class="contentLogo">
+        <img src="images/logo-tec.png" id="imglogo" alt="Logotipo del TEC" />
+      </div>
+    </div>
+
+    <div id="divCargando" style="display: none">
+      <div class="spTitCargando">Cargando Horarios...</div>
+    </div>
+
+    <div class="modal">
+      <!-- Place at bottom of page -->
+    </div>
+
+    <script type="text/javascript">
+      ValidaConvocatoria([
+        {
+          ID_CONVOCATORIA: 598,
+          ID_PERIODO: 346,
+          ID_TIPOMATRICULA: 1,
+          FECHA_INICIO: "09 feb. 2026 08:00",
+          FECHA_FINAL: "10 feb. 2026 16:00",
+          IND_RN: false,
+          IND_CHOQUEHORARIO: false,
+          IND_MOROSIDAD: false,
+          ESTADO: true,
+          ID_USUARIOCREACION: "xsalas@itcr.ac.cr",
+          FEC_CREACION: "15 oct. 2025 11:52",
+          TIPOMATRICULA: "Ordinaria",
+          PERIODO: "1",
+          DENTRO_FECHA: true,
+          MODALIDAD: "Semestre",
+        },
+      ]);
+    </script>
+    <script type="text/javascript">
+      ObtieneHora("02/10/2026 03:11:57");
+    </script>
+    <script type="text/javascript">
+      Carga_Foto("false");
+    </script>
+    <script type="text/javascript">
+      //<![CDATA[
+      WebForm_AutoFocus("btnDisableEnter"); //]]>
+    </script>
+  </form>
+  <div
+    class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-dialog-buttons ui-draggable"
+    tabindex="-1"
+    role="dialog"
+    style="
+      height: auto;
+      width: 800px;
+      top: 281.5px;
+      left: 52.5px;
+      display: none;
+      z-index: 101;
+    "
+    aria-describedby="dialogConvocatorias"
+    aria-labelledby="ui-id-1"
+  >
+    <div
+      id="dialogConvocatorias"
+      class=""
+      style="width: auto; min-height: 0px; max-height: none; height: 376px"
+    >
+      <div class="headerDialog">
+        <div class="cTitulo">Matrículas Disponibles</div>
+        <div class="cCerrar">
+          <img src="images/close.png" class="imgCloseDialog" alt="Cerrar" />
+        </div>
+      </div>
+      <div class="headerConvocatorias">
+        <table id="tHeaderConvocatoria">
+          <thead>
+            <tr>
+              <td>Modalidad</td>
+              <td>Periodo</td>
+
+              <td>Tipo</td>
+              <td>Inicio</td>
+              <td>Fin</td>
+              <td>Seleccionar</td>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <div class="bodyConvocatorias">
+        <table id="Table_ConvocatoriaEstudiante">
+          <tbody>
+            <tr id="598_346">
+              <td class="center">Semestre</td>
+              <td class="center">1</td>
+              <td class="center">Ordinaria</td>
+              <td>09 feb. 2026 08:00</td>
+              <td>10 feb. 2026 16:00</td>
+              <td class="center">
+                <img
+                  class="btn_Consultar"
+                  src="images/checkgreen.png"
+                  style="z-index: 1; width: 30px; height: 30px"
+                  title="Seleccionar Convocatoria Activa"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <div class="ui-dialog-buttonset">
+        <button
+          type="button"
+          class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+          role="button"
+        >
+          <span class="ui-button-text">Ver Historial Académico</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-dialog-buttons ui-draggable"
+    tabindex="-1"
+    role="dialog"
+    style="display: none"
+    aria-describedby="divResultado"
+    aria-labelledby="ui-id-2"
+  >
+    <div id="divResultado" class="ui-dialog-content ui-widget-content">
+      <span>
+        <img
+          src="images/pending.png"
+          class="imgResultado"
+          alt="Resultado Evento"
+      /></span>
+      <span class="spResultado"></span>
+    </div>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <div class="ui-dialog-buttonset">
+        <button
+          type="button"
+          class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+          role="button"
+        >
+          <span class="ui-button-text">Continuar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-dialog-buttons"
+    tabindex="-1"
+    role="dialog"
+    style="display: none"
+    aria-describedby="ui-id-3"
+    aria-labelledby="ui-id-4"
+  >
+    <div
+      class="dialogo-resultado ui-dialog-content ui-widget-content"
+      id="ui-id-3"
+    >
+      <br />
+      <div class="dialogo-texto"></div>
+    </div>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <div class="ui-dialog-buttonset">
+        <button
+          type="button"
+          class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+          role="button"
+        >
+          <span class="ui-button-text">Cerrar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    id="consolaActividad"
+    style="
+      position: fixed;
+      bottom: 0px;
+      background: rgba(55, 93, 212, 0.62);
+      border-radius: 0.4em;
+      width: 500px;
+      padding: 30px 20px;
+      margin: 1em;
+      color: white;
+      font-weight: bold;
+      font-size: 130%;
+      text-shadow: rgba(0, 0, 0, 0.3) 0px -0.05em 0.1em;
+      height: 80px;
+      overflow: auto;
+    "
+  >
+    Consola de Actividad
+  </div>
+  <a
+    id="moxdiButt"
+    href="https://www.moxdi.com"
+    style="
+      margin: 1.5rem;
+      position: fixed;
+      bottom: 0px;
+      display: inline-block;
+      padding: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      outline: none;
+      color: rgb(0, 255, 206);
+      background-color: rgb(26, 31, 30);
+      border: none;
+      border-radius: 5px;
+    "
+    >Visita mi otro proyecto Moxdi</a
+  >
+</body>
