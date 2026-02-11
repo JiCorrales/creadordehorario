@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Course, CourseStatus, CourseSession } from '../types';
 import { generateId, DAYS, STATUSES, PREDEFINED_COLORS, DEFAULT_COURSE_COLOR, isValidHex, hexToRgb } from '../utils';
-import { PlusCircle, Clock, MapPin, Save, X, Edit, Palette, ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { PlusCircle, Clock, MapPin, Save, Edit, Palette, ChevronDown, ChevronUp, Check } from 'lucide-react';
 import TimeInput from './TimeInput';
 
 interface CourseFormProps {
