@@ -19,17 +19,29 @@ const STATUS_MAP: Record<string, CourseStatus> = {
     'Presencial': 'Presencial',
     'Virtual': 'Virtual',
     'Semipresencial': 'Semipresencial',
-    'Bimodal': 'Semipresencial', // Map unknown to closest
-    'Regular': 'Presencial' // Assuming Regular = Presencial
+    'Bimodal': 'Semipresencial',
+    'Regular': 'Presencial'
 };
 
 export const parseTecHtml = (htmlContent: string): ScrapedCourse[] => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlContent, 'text/html');
+
+    // Detect if it is the Student Profile (Expediente) or Matricula
+    // The profile has div elements with class 'window_pg' for courses
+    const isStudentProfile = doc.querySelectorAll('.window_pg').length > 0;
+
+    if (isStudentProfile) {
+        return parseStudentProfile(doc);
+    } else {
+        return parseMatricula(doc);
+    }
+};
+
+const parseMatricula = (doc: Document): ScrapedCourse[] => {
     const courses: ScrapedCourse[] = [];
 
     // Find all main course rows (they have an id but are not accordion details)
-    // The structure is: <tr id="CODE">...</tr> followed by <tr id="trHCODE">...</tr>
     const rows = Array.from(doc.querySelectorAll('#tBodyCursos > tbody > tr'));
 
     for (let i = 0; i < rows.length; i++) {
@@ -44,7 +56,8 @@ export const parseTecHtml = (htmlContent: string): ScrapedCourse[] => {
         const code = codeCell.textContent?.trim() || id;
 
         const nameCell = row.querySelector('.colMateria span');
-        const name = nameCell?.textContent?.trim() || 'Desconocido';
+        const rawName = nameCell?.textContent?.trim() || 'Desconocido';
+        const name = `${code} ${rawName}`;
 
         const creditsCell = row.querySelector('.colCreditos');
         const credits = parseInt(creditsCell?.textContent?.trim() || '0');
@@ -81,7 +94,6 @@ export const parseTecHtml = (htmlContent: string): ScrapedCourse[] => {
                     const html = scheduleCell.innerHTML;
                     const parts = html.split('<br>').map(p => p.trim()).filter(p => p);
 
-                    // Iterate parts to find time patterns
                     // Pattern: "L 07:30-10:20"
                     const timeRegex = /([LKMJVSD])\s+(\d{1,2}:\d{2})-(\d{1,2}:\d{2})/;
 
@@ -89,20 +101,15 @@ export const parseTecHtml = (htmlContent: string): ScrapedCourse[] => {
                         const match = parts[j].match(timeRegex);
                         if (match) {
                             const [_, dayCode, start, end] = match;
-                            // The next part is usually the classroom, unless it's another time
                             let classroom = 'Sin aula';
                             if (j + 1 < parts.length && !parts[j+1].match(timeRegex)) {
                                 classroom = parts[j+1];
-                                // Skip the classroom part in next iteration?
-                                // Actually the loop will just check it and fail regex, which is fine.
-                                // But if we consume it, we should maybe increment j.
-                                // However, simple iteration is safer.
                             }
 
                             sessions.push({
                                 id: generateId(),
                                 day: DAYS_MAP[dayCode] || dayCode,
-                                startTime: start.padStart(5, '0'), // Ensure 07:30 format
+                                startTime: start.padStart(5, '0'),
                                 endTime: end.padStart(5, '0'),
                                 classroom: classroom
                             });
@@ -126,6 +133,70 @@ export const parseTecHtml = (htmlContent: string): ScrapedCourse[] => {
             });
         }
     }
+    return courses;
+};
+
+const parseStudentProfile = (doc: Document): ScrapedCourse[] => {
+    const courses: ScrapedCourse[] = [];
+    const rows = Array.from(doc.querySelectorAll('#t_guia_horario table tbody tr'));
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length < 7) return;
+
+        const code = cells[0].textContent?.trim() || 'Desconocido';
+        const name = cells[1].textContent?.trim() || 'Desconocido';
+        const group = cells[2].textContent?.trim() || '0';
+        const credits = parseInt(cells[3].textContent?.trim() || '0');
+        const scheduleText = cells[4].textContent?.trim() || '';
+        const classroom = cells[5].textContent?.trim() || 'Sin aula';
+        const professor = cells[6].textContent?.trim() || 'Por asignar';
+        const quota = parseInt(cells[7]?.textContent?.trim() || '0');
+        const reserved = cells[10]?.textContent?.trim() === '1';
+
+        // Parse Schedule
+        // Format example: "Martes - 9:30:11:20"
+        const sessions: CourseSession[] = [];
+        if (scheduleText) {
+            const parts = scheduleText.split('-').map(p => p.trim());
+            if (parts.length >= 2) {
+                const dayName = parts[0]; // e.g., "Martes"
+                // The time part might be "9:30:11:20"
+                const timePart = parts[1];
+
+                // Regex to match H:MM:H:MM or HH:MM:HH:MM
+                const timeMatch = timePart.match(/(\d{1,2}):(\d{2}):(\d{1,2}):(\d{2})/);
+
+                if (timeMatch) {
+                    const [_, startH, startM, endH, endM] = timeMatch;
+                    const startTime = `${startH.padStart(2, '0')}:${startM}`;
+                    const endTime = `${endH.padStart(2, '0')}:${endM}`;
+
+                    sessions.push({
+                        id: generateId(),
+                        day: dayName,
+                        startTime: startTime,
+                        endTime: endTime,
+                        classroom: classroom
+                    });
+                }
+            }
+        }
+
+        courses.push({
+            originalCode: code,
+            name: name,
+            campus: 'Cartago', // Default fallback
+            group: group,
+            professor: professor,
+            credits: credits,
+            quota: quota,
+            reserved: reserved,
+            status: 'Presencial',
+            sessions: sessions,
+            color: DEFAULT_COURSE_COLOR
+        });
+    });
 
     return courses;
 };

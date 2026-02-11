@@ -9,8 +9,8 @@ document.getElementById('extractBtn').addEventListener('click', async () => {
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
-    if (!tab.url.includes('tec-appsext.itcr.ac.cr') && !tab.url.includes('frmMatricula.aspx')) {
-      throw new Error('Debes estar en la página de matrícula del TEC');
+    if (!tab.url.includes('tec-appsext.itcr.ac.cr') && !tab.url.includes('frmMatricula.aspx') && !tab.url.includes('tecdigital.tec.ac.cr')) {
+      throw new Error('Debes estar en la página de matrícula del TEC o en el Expediente Estudiantil');
     }
 
     const result = await chrome.scripting.executeScript({
