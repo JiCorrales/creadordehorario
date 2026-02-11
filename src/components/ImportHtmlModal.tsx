@@ -3,6 +3,7 @@ import { Upload, FileText, Check, AlertTriangle, ChevronDown, ChevronRight, Sear
 import { ScrapedCourse, parseTecHtml } from '../services/scrapingService';
 import { Course } from '../types';
 import { generateId } from '../utils';
+import Scrollable from './Scrollable';
 
 interface ImportHtmlModalProps {
     isOpen: boolean;
@@ -259,14 +260,14 @@ const ImportHtmlModal: React.FC<ImportHtmlModalProps> = ({ isOpen, onClose, onIm
                                 <div className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
                                     {selectedIndices.size} seleccionados de {scrapedData.length} grupos
                                 </div>
-                            </div>
+                        </div>
 
-                            <div className="flex-1 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg">
-                                {groupedCourses.length === 0 ? (
-                                    <div className="p-8 text-center text-gray-500">
-                                        No se encontraron resultados para tu búsqueda.
-                                    </div>
-                                ) : (
+                        <Scrollable className="flex-1 border border-gray-200 dark:border-gray-700 rounded-lg">
+                            {groupedCourses.length === 0 ? (
+                                <div className="p-8 text-center text-gray-500">
+                                    No se encontraron resultados para tu búsqueda.
+                                </div>
+                            ) : (
                                     groupedCourses.map(([key, group]) => {
                                         const isExpanded = expandedCourses.has(key);
                                         const groupSelectedCount = group.indices.filter(i => selectedIndices.has(i)).length;
@@ -366,12 +367,12 @@ const ImportHtmlModal: React.FC<ImportHtmlModalProps> = ({ isOpen, onClose, onIm
                                                 )}
                                             </div>
                                         );
-                                    })
-                                )}
-                            </div>
-                        </div>
-                    )}
-                </div>
+                                })
+                            )}
+                        </Scrollable>
+                    </div>
+                )}
+            </div>
 
                 {/* Footer */}
                 <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3 bg-gray-50 dark:bg-gray-800/50 rounded-b-lg">

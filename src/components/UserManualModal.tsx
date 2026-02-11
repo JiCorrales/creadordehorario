@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, BookOpen, CheckCircle, AlertCircle, HelpCircle, FileText, Download, Calendar } from 'lucide-react';
+import Scrollable from './Scrollable';
 
 interface UserManualModalProps {
     isOpen: boolean;
@@ -24,7 +25,7 @@ const UserManualModal: React.FC<UserManualModalProps> = ({ isOpen, onClose }) =>
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-8 text-gray-700 dark:text-gray-300">
+                <Scrollable className="flex-1 p-6 space-y-8 text-gray-700 dark:text-gray-300">
 
                     {/* 1. Introducción */}
                     <section>
@@ -143,7 +144,7 @@ const UserManualModal: React.FC<UserManualModalProps> = ({ isOpen, onClose }) =>
                         </div>
                     </section>
 
-                </div>
+                </Scrollable>
 
                 {/* Footer */}
                 <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-end bg-gray-50 dark:bg-gray-800/50 rounded-b-lg">

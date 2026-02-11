@@ -29,7 +29,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [rgb, setRgb] = useState({ r: 0, g: 102, b: 204 }); // Default blue RGB
 
-  const [frequency, setFrequency] = useState<1 | 2>(1);
+  const [frequency, setFrequency] = useState<number>(1);
   const [sessions, setSessions] = useState<Omit<CourseSession, 'id'>[]>([
     { day: 'Lunes', startTime: '', endTime: '', classroom: '' }
   ]);
@@ -52,7 +52,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
       if (rgbVal) setRgb(rgbVal);
 
       const sessionCount = courseToEdit.sessions.length;
-      setFrequency(sessionCount > 1 ? 2 : 1);
+      setFrequency(sessionCount);
 
       // Clean up session IDs for the form state
       setSessions(courseToEdit.sessions.map(({ day, startTime, endTime, classroom }) => ({
@@ -86,24 +86,24 @@ const CourseForm: React.FC<CourseFormProps> = ({
     setColor(`#${toHex(newRgb.r)}${toHex(newRgb.g)}${toHex(newRgb.b)}`.toUpperCase());
   };
 
-  // Adjust sessions when frequency changes manually
+  // Adjust sessions when frequency changes
   useEffect(() => {
-    if (!courseToEdit) {
-        // Only adjust if not loading a course, or if user explicitly changes frequency
-        // Actually, better logic:
-        if (frequency === 1 && sessions.length > 1) {
-            setSessions(prev => [prev[0]]);
-        } else if (frequency === 2 && sessions.length < 2) {
-             setSessions(prev => [...prev, { day: 'Jueves', startTime: '', endTime: '', classroom: '' }]);
+    setSessions(prev => {
+        if (prev.length === frequency) return prev;
+
+        if (prev.length < frequency) {
+            // Add needed sessions
+            const countToAdd = frequency - prev.length;
+            const newSessions = [...prev];
+            for (let i = 0; i < countToAdd; i++) {
+                newSessions.push({ day: 'Lunes', startTime: '', endTime: '', classroom: '' });
+            }
+            return newSessions;
+        } else {
+            // Remove extra sessions
+            return prev.slice(0, frequency);
         }
-    } else {
-        // If editing, and user changes frequency
-        if (frequency === 1 && sessions.length > 1) {
-            setSessions(prev => [prev[0]]);
-        } else if (frequency === 2 && sessions.length < 2) {
-             setSessions(prev => [...prev, { day: 'Jueves', startTime: '', endTime: '', classroom: '' }]);
-        }
-    }
+    });
   }, [frequency]);
 
   const resetForm = () => {
@@ -306,7 +306,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
             id="reserved"
             checked={reserved}
             onChange={e => setReserved(e.target.checked)}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600"
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-offset-gray-800"
           />
           <label htmlFor="reserved" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
             Reservado
@@ -324,8 +324,8 @@ const CourseForm: React.FC<CourseFormProps> = ({
           <Palette className="w-4 h-4" />
           Cambiar color del curso
           {showColorPicker ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          <div 
-            className="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 ml-2" 
+          <div
+            className="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 ml-2"
             style={{ backgroundColor: color }}
             title="Color actual"
           ></div>
@@ -365,11 +365,11 @@ const CourseForm: React.FC<CourseFormProps> = ({
                   </label>
                   <div className="flex gap-4 items-center">
                     {/* Preview */}
-                    <div 
+                    <div
                         className="w-16 h-16 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 flex-shrink-0 transition-colors duration-300"
                         style={{ backgroundColor: color }}
                     ></div>
-                    
+
                     <div className="flex-1 space-y-2">
                         {/* Hex Input */}
                         <div className="flex items-center gap-2">
@@ -385,7 +385,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
                                 />
                             </div>
                         </div>
-                        
+
                         {/* RGB Inputs */}
                         <div className="flex items-center gap-2">
                              <span className="text-xs text-gray-500 dark:text-gray-400 w-8">RGB</span>
@@ -431,28 +431,23 @@ const CourseForm: React.FC<CourseFormProps> = ({
       {/* Frequency and Sessions */}
       <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Frecuencia Semanal</label>
-          <div className="flex gap-4">
-            <label className="inline-flex items-center">
-              <input
-                type="radio"
-                className="form-radio text-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                name="frequency"
-                checked={frequency === 1}
-                onChange={() => setFrequency(1)}
-              />
-              <span className="ml-2 text-gray-700 dark:text-gray-300">Una vez por semana</span>
-            </label>
-            <label className="inline-flex items-center">
-              <input
-                type="radio"
-                className="form-radio text-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                name="frequency"
-                checked={frequency === 2}
-                onChange={() => setFrequency(2)}
-              />
-              <span className="ml-2 text-gray-700 dark:text-gray-300">Dos veces por semana</span>
-            </label>
+          <label htmlFor="frequency-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Frecuencia Semanal
+          </label>
+          <div className="flex items-center gap-3">
+             <select
+                id="frequency-select"
+                value={frequency}
+                onChange={(e) => setFrequency(parseInt(e.target.value))}
+                className="w-24 h-9 px-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white"
+             >
+                {Array.from({ length: 7 }, (_, i) => i + 1).map(num => (
+                    <option key={num} value={num}>
+                        {num}
+                    </option>
+                ))}
+             </select>
+             <span className="text-sm text-gray-600 dark:text-gray-400">veces por semana</span>
           </div>
         </div>
 
@@ -463,8 +458,8 @@ const CourseForm: React.FC<CourseFormProps> = ({
                 <Clock className="w-4 h-4" />
                 Sesión {index + 1}
               </h4>
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-                <div className="md:col-span-2">
+              <div className="grid grid-cols-2 md:grid-cols-12 xl:grid-cols-2 gap-3">
+                <div className="col-span-1 md:col-span-2 xl:col-span-1 order-1 md:order-1 xl:order-1">
                   <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Día</label>
                   <select
                     required
@@ -477,29 +472,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
                     ))}
                   </select>
                 </div>
-                <div className="md:col-span-4">
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Hora Inicio</label>
-                  <TimeInput
-                    required
-                    value={session.startTime}
-                    onChange={val => handleSessionChange(index, 'startTime', val)}
-                    minHour={7}
-                    maxHour={23}
-                  />
-                </div>
-                <div className="md:col-span-4">
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Hora Fin</label>
-                  <TimeInput
-                    required
-                    value={session.endTime}
-                    onChange={val => handleSessionChange(index, 'endTime', val)}
-                    minHour={7}
-                    maxHour={23}
-                    minTime={session.startTime}
-                    error={getSessionError(index)}
-                  />
-                </div>
-                <div className="md:col-span-2">
+                <div className="col-span-1 md:col-span-2 xl:col-span-1 order-2 md:order-4 xl:order-2">
                   <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1 flex items-center gap-1">
                     <MapPin className="w-3 h-3" />
                     Aula
@@ -513,6 +486,28 @@ const CourseForm: React.FC<CourseFormProps> = ({
                       placeholder="Aula"
                     />
                   </div>
+                </div>
+                <div className="col-span-1 md:col-span-4 xl:col-span-1 order-3 md:order-2 xl:order-3">
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Hora Inicio</label>
+                  <TimeInput
+                    required
+                    value={session.startTime}
+                    onChange={val => handleSessionChange(index, 'startTime', val)}
+                    minHour={7}
+                    maxHour={23}
+                  />
+                </div>
+                <div className="col-span-1 md:col-span-4 xl:col-span-1 order-4 md:order-3 xl:order-4">
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Hora Fin</label>
+                  <TimeInput
+                    required
+                    value={session.endTime}
+                    onChange={val => handleSessionChange(index, 'endTime', val)}
+                    minHour={7}
+                    maxHour={23}
+                    minTime={session.startTime}
+                    error={getSessionError(index)}
+                  />
                 </div>
               </div>
             </div>

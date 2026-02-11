@@ -38,6 +38,7 @@ describe('ScheduleView Editing', () => {
         schedule={mockSchedule}
         onRemoveCourse={handleRemove}
         onEditCourse={handleEdit}
+        theme="light"
       />
     );
 
@@ -60,6 +61,7 @@ describe('ScheduleView Editing', () => {
         schedule={mockSchedule}
         onRemoveCourse={handleRemove}
         onEditCourse={handleEdit}
+        theme="light"
       />
     );
 

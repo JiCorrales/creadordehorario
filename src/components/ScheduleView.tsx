@@ -6,18 +6,20 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import Scrollable from './Scrollable';
 
 interface ScheduleViewProps {
   schedule: Schedule;
   onRemoveCourse: (courseId: string) => void;
   onEditCourse: (course: Course) => void;
+  theme: 'light' | 'dark' | 'system';
 }
 
 const START_HOUR = 7;
 const END_HOUR = 23;
 const HOUR_HEIGHT = 60; // px
 
-const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse, onEditCourse }) => {
+const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse, onEditCourse, theme }) => {
   const [showExportMenu, setShowExportMenu] = useState(false);
 
   const parseTime = (time: string) => {
@@ -92,7 +94,39 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse, o
   const exportPDFVisual = () => {
     const doc = new jsPDF('landscape', 'mm', 'a4'); // Landscape for better fit
     const pageWidth = doc.internal.pageSize.getWidth();
-    // const pageHeight = doc.internal.pageSize.getHeight();
+    const pageHeight = doc.internal.pageSize.getHeight(); // We need height for background
+
+    // Determine current effective theme
+    let isDarkMode = theme === 'dark';
+    if (theme === 'system') {
+        if (typeof window !== 'undefined' && window.matchMedia) {
+            isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+    }
+
+    // Color Definitions based on Theme
+    const bgColor = isDarkMode ? [31, 41, 55] : [255, 255, 255]; // gray-800 vs white
+    const textColor = isDarkMode ? [255, 255, 255] : [0, 0, 0];
+    const gridHeaderBg = isDarkMode ? [55, 65, 81] : [240, 240, 240]; // gray-700 vs gray-100
+    const gridLineColor = isDarkMode ? [75, 85, 99] : [200, 200, 200]; // gray-600 vs gray-200
+    const hourTextColor = isDarkMode ? [156, 163, 175] : [0, 0, 0]; // gray-400 vs black
+
+    // Helper to mix color with white (light mode) or dark (dark mode) to simulate opacity
+    const getLightColor = (r: number, g: number, b: number, opacity: number = 0.25) => {
+        const bgR = isDarkMode ? 31 : 255;
+        const bgG = isDarkMode ? 41 : 255;
+        const bgB = isDarkMode ? 55 : 255;
+
+        return {
+            r: Math.round(r * opacity + bgR * (1 - opacity)),
+            g: Math.round(g * opacity + bgG * (1 - opacity)),
+            b: Math.round(b * opacity + bgB * (1 - opacity))
+        };
+    };
+
+    // Draw Page Background
+    doc.setFillColor(bgColor[0], bgColor[1], bgColor[2]);
+    doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
     // Layout Config
     const margin = 10;
@@ -103,14 +137,16 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse, o
     const hourHeight = 12; // Height per hour row
 
     // Header
+    doc.setTextColor(textColor[0], textColor[1], textColor[2]);
     doc.setFontSize(18);
     doc.text(`Horario: ${schedule.name}`, margin, 15);
     doc.setFontSize(12);
     doc.text(`Créditos Totales: ${totalCredits}`, margin, 25);
 
     // Draw Grid Headers (Days)
-    doc.setFillColor(240, 240, 240);
+    doc.setFillColor(gridHeaderBg[0], gridHeaderBg[1], gridHeaderBg[2]);
     doc.rect(margin + timeColWidth, headerHeight, pageWidth - margin * 2 - timeColWidth, 10, 'F');
+    doc.setTextColor(textColor[0], textColor[1], textColor[2]);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
 
@@ -118,6 +154,7 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse, o
         const x = margin + timeColWidth + (i * dayColWidth);
         doc.text(day, x + dayColWidth/2, headerHeight + 7, { align: 'center' });
         // Vertical lines
+        doc.setDrawColor(gridLineColor[0], gridLineColor[1], gridLineColor[2]);
         doc.line(x, headerHeight, x, gridTop + ((END_HOUR - START_HOUR + 1) * hourHeight));
     });
     // Last vertical line
@@ -126,12 +163,13 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse, o
     // Draw Grid Rows (Hours)
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
+    doc.setTextColor(hourTextColor[0], hourTextColor[1], hourTextColor[2]);
 
     for (let h = START_HOUR; h <= END_HOUR; h++) {
         const y = gridTop + ((h - START_HOUR) * hourHeight);
 
         // Horizontal line
-        doc.setDrawColor(200, 200, 200);
+        doc.setDrawColor(gridLineColor[0], gridLineColor[1], gridLineColor[2]);
         doc.line(margin, y, pageWidth - margin, y);
 
         // Hour label
@@ -143,7 +181,7 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse, o
     doc.line(margin, finalY, pageWidth - margin, finalY);
 
     // Draw Border around grid
-    doc.setDrawColor(0, 0, 0);
+    doc.setDrawColor(gridLineColor[0], gridLineColor[1], gridLineColor[2]);
     doc.rect(margin, headerHeight, pageWidth - margin * 2, finalY - headerHeight);
 
     // Draw Courses
@@ -154,18 +192,10 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse, o
         const hexColor = course.color || DEFAULT_COURSE_COLOR;
         const rgbColor = hexToRgb(hexColor);
 
-        // We use a lighter version for background in PDF to ensure text readability?
-        // Or we just use the color. The user sees a preview.
-        // If the color is dark, text should be white.
-        // For simplicity in PDF, let's just use the color.
-
         course.sessions.forEach(session => {
             // Ensure color is set correctly for EACH session block
-            if (rgbColor) {
-                 doc.setFillColor(rgbColor.r, rgbColor.g, rgbColor.b);
-            } else {
-                 doc.setFillColor(200, 200, 200);
-            }
+            // Note: Background and border colors are set inside the drawing loop now
+            // to support the visual style (light bg, solid border)
 
             const dayIndex = DAYS.indexOf(session.day);
             if (dayIndex === -1) return;
@@ -184,12 +214,39 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse, o
 
             // Check for valid dimensions before drawing rect
             if (!isNaN(x) && !isNaN(y) && !isNaN(width) && !isNaN(height) && height > 0 && width > 0) {
-                // Draw Box
+                // 1. Draw Background (Light/Dark color based on theme)
+                if (rgbColor) {
+                    const light = getLightColor(rgbColor.r, rgbColor.g, rgbColor.b);
+                    doc.setFillColor(light.r, light.g, light.b);
+                } else {
+                    doc.setFillColor(gridHeaderBg[0], gridHeaderBg[1], gridHeaderBg[2]);
+                }
                 doc.rect(x, y, width, height, 'F');
+
+                // 2. Draw Left Border (Solid color)
+                if (rgbColor) {
+                    doc.setFillColor(rgbColor.r, rgbColor.g, rgbColor.b);
+                } else {
+                    doc.setFillColor(100, 100, 100);
+                }
+                // Draw a thin rectangle on the left (approx 1mm width or relative to border-l-4)
+                // border-l-4 is 4px. 1mm is approx 3.78px. So 1mm is a good approximation.
+                doc.rect(x, y, 1, height, 'F');
 
                 // Draw Text (Course Name, Room, etc.)
                 // Clip text logic simplistic:
-                doc.setTextColor(0, 0, 0);
+
+                // 3. Title Text (Solid Color)
+                // In Dark mode, maybe we want the title to be lighter if the course color is very dark?
+                // But usually course colors are vibrant. Let's keep using the course color for title,
+                // but ensure contrast if needed. For now, same logic as light mode (use course color).
+                if (rgbColor) {
+                    // Check luminance if needed, but simplistic approach:
+                    doc.setTextColor(rgbColor.r, rgbColor.g, rgbColor.b);
+                } else {
+                    doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+                }
+
                 doc.setFontSize(8);
                 doc.setFont('helvetica', 'bold');
 
@@ -211,6 +268,13 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse, o
 
                 doc.text(name, textX, textY);
                 textY += 4;
+
+                // 4. Other Details (Dark Gray / Black in Light, Light Gray in Dark)
+                if (isDarkMode) {
+                     doc.setTextColor(200, 200, 200); // Light gray for dark mode
+                } else {
+                     doc.setTextColor(50, 50, 50); // Dark gray for light mode
+                }
 
                 if (height > 20) {
                     doc.setFont('helvetica', 'normal');
@@ -257,7 +321,7 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse, o
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md overflow-x-auto transition-colors duration-200">
+    <Scrollable className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md transition-colors duration-200">
       <div className="flex justify-between items-center mb-4">
         <div>
             <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Vista de Horario</h2>
@@ -392,7 +456,7 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse, o
           ))}
         </div>
       </div>
-    </div>
+    </Scrollable>
   );
 };
 

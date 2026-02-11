@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Calendar, AlertCircle, Moon, Sun, FileText, BookOpen } from 'lucide-react'
+import { useOverlayScrollbars } from 'overlayscrollbars-react';
+import 'overlayscrollbars/overlayscrollbars.css';
+import { Calendar, AlertCircle, Moon, Sun, Import , BookOpen } from 'lucide-react'
 import CourseForm from './components/CourseForm'
 import ScheduleView from './components/ScheduleView'
 import ScheduleManager from './components/ScheduleManager'
@@ -13,6 +15,23 @@ import { Course } from './types'
 
 function App() {
   const { theme, toggleTheme } = useTheme();
+
+  // Initialize OverlayScrollbars for the body
+  const [initBodyOverlayScrollbars] = useOverlayScrollbars({
+    defer: true,
+    options: {
+      scrollbars: {
+        theme: 'os-theme-custom',
+        autoHide: 'scroll',
+        clickScroll: true,
+      },
+    },
+  });
+
+  useEffect(() => {
+    initBodyOverlayScrollbars(document.body);
+  }, [initBodyOverlayScrollbars]);
+
   const {
     schedules,
     currentSchedule,
@@ -25,7 +44,8 @@ function App() {
     removeCourse,
     toggleCourseStatus,
     importCourses,
-    addCourses
+    addCourses,
+    renameSchedule
   } = useSchedule();
 
   const [error, setError] = useState<string | null>(null);
@@ -86,6 +106,26 @@ function App() {
     }
   };
 
+  const handleBulkToggleStatus = (courseIds: string[]) => {
+    try {
+        setError(null);
+        courseIds.forEach(id => toggleCourseStatus(id));
+    } catch (err: any) {
+        setError(err.message);
+        setTimeout(() => setError(null), 5000);
+    }
+  };
+
+  const handleBulkDelete = (courseIds: string[]) => {
+      try {
+          setError(null);
+          courseIds.forEach(id => removeCourse(id));
+      } catch (err: any) {
+          setError(err.message);
+          setTimeout(() => setError(null), 5000);
+      }
+  };
+
   const handleUnscheduleFromView = (courseId: string) => {
       // In the view, clicking trash means "remove from schedule", so we toggle it off.
       // We don't delete the course entirely.
@@ -96,12 +136,16 @@ function App() {
     setIsImportModalOpen(true);
   };
 
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   const handleImportConfirm = (sourceId: string) => {
     try {
       importCourses(sourceId);
       setIsImportModalOpen(false);
+      setSuccessMessage("Cursos importados correctamente.");
+      setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err: any) {
-      setError("Error al importar cursos");
+      setError(err.message || "Error al importar cursos");
       setTimeout(() => setError(null), 3000);
     }
   };
@@ -132,7 +176,7 @@ function App() {
                 className="p-2 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 shadow-sm hover:shadow-md transition-all border border-gray-200 dark:border-gray-700 hover:text-blue-600 dark:hover:text-blue-400"
                 title="Importar cursos desde HTML (Matrícula TEC)"
             >
-                <FileText className="w-6 h-6" />
+                <Import className="w-6 h-6" />
             </button>
             <button
                 onClick={() => setIsManualOpen(true)}
@@ -151,6 +195,13 @@ function App() {
           </div>
         </header>
 
+        {successMessage && (
+          <div className="bg-green-100 dark:bg-green-900/30 border-l-4 border-green-500 text-green-700 dark:text-green-300 p-4 mb-6 flex items-center gap-2 rounded shadow-sm animate-pulse sticky top-4 z-50" role="alert">
+            <AlertCircle className="w-5 h-5" />
+            <p>{successMessage}</p>
+          </div>
+        )}
+
         {error && (
           <div className="bg-red-100 dark:bg-red-900/30 border-l-4 border-red-500 text-red-700 dark:text-red-300 p-4 mb-6 flex items-center gap-2 rounded shadow-sm animate-pulse sticky top-4 z-50" role="alert">
             <AlertCircle className="w-5 h-5" />
@@ -164,31 +215,30 @@ function App() {
           onSwitchSchedule={setCurrentScheduleId}
           onCreateSchedule={createSchedule}
           onDeleteSchedule={deleteSchedule}
+          onRenameSchedule={renameSchedule}
         />
 
         {currentSchedule ? (
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-            {/* Left Column: Form */}
-            <div className="xl:col-span-4 space-y-6">
+          <div className="flex flex-col xl:flex-row gap-6">
+            <div className="w-full xl:w-1/4 min-w-[300px] space-y-6">
               <CourseForm
                 onAddCourse={handleAddCourse}
                 onUpdateCourse={handleUpdateCourse}
-                onCancelEdit={() => {}} // Not used in add mode
+                onCancelEdit={() => {}}
               />
             </div>
 
-            {/* Right Column: Schedule View & Table */}
-            <div className="xl:col-span-8 space-y-8">
+            <div className="w-full xl:flex-1 space-y-6">
               <ScheduleView
                 schedule={currentSchedule}
                 onRemoveCourse={handleUnscheduleFromView}
                 onEditCourse={handleEditCourse}
+                theme={theme}
               />
-
               <CourseTable
                 courses={currentSchedule.courses}
-                onToggleStatus={handleToggleStatus}
-                onDelete={removeCourse}
+                onBulkToggleStatus={handleBulkToggleStatus}
+                onBulkDelete={handleBulkDelete}
                 onEdit={handleEditCourse}
                 onImport={handleImportClick}
               />

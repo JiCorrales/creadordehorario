@@ -214,14 +214,27 @@ export const useSchedule = () => {
 
     const sourceSchedule = schedules.find(s => s.id === sourceScheduleId);
     if (!sourceSchedule) return;
+    const currentSchedule = schedules.find(s => s.id === currentScheduleId);
+    if (!currentSchedule) return;
 
-    const newCourses = sourceSchedule.courses.map(c => ({
-        ...c,
-        id: generateId(), // Regenerate ID to avoid conflicts if we import multiple times or edit independently
-        isScheduled: false, // Import as pending
-        // Regenerate session IDs too
-        sessions: c.sessions.map(s => ({ ...s, id: generateId() }))
-    }));
+    // Filter duplicates: Check if course with same name and group already exists
+    const existingKeys = new Set(
+        currentSchedule.courses.map(c => `${c.name}-${c.group}`)
+    );
+
+    const newCourses = sourceSchedule.courses
+        .filter(c => !existingKeys.has(`${c.name}-${c.group}`))
+        .map(c => ({
+            ...c,
+            id: generateId(), // Regenerate ID to avoid conflicts if we import multiple times or edit independently
+            isScheduled: false, // Import as pending
+            // Regenerate session IDs too
+            sessions: c.sessions.map(s => ({ ...s, id: generateId() }))
+        }));
+
+    if (newCourses.length === 0) {
+        throw new Error("No hay cursos nuevos para importar (todos duplicados).");
+    }
 
     setSchedules(schedules.map(s => {
         if (s.id === currentScheduleId) {
@@ -232,6 +245,62 @@ export const useSchedule = () => {
         }
         return s;
     }));
+  };
+
+  const renameSchedule = async (scheduleId: string, newName: string) => {
+    console.log(`[Schedule] Attempting to rename schedule ${scheduleId} to "${newName}"`);
+
+    // 1. Optimistic Update
+    const previousSchedules = [...schedules];
+    setSchedules(prev => prev.map(s => {
+      if (s.id === scheduleId) {
+        return { ...s, name: newName };
+      }
+      return s;
+    }));
+
+    try {
+      // Simulate API call for local environment
+      // In a real environment, this would be: await fetch(...)
+      await new Promise<void>((resolve) => {
+          setTimeout(() => {
+              // Simulate success
+              // For testing failure, you could randomly reject:
+              // if (Math.random() < 0.1) reject(new Error('Simulated server error'));
+              resolve();
+          }, 500);
+      });
+
+      /*
+      // Real API implementation (commented out for local demo)
+      const response = await fetch(`/api/schedule/${scheduleId}/rename`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: newName }),
+      });
+
+      if (!response.ok) {
+        let errorMessage = `Error del servidor: ${response.status}`;
+        try {
+          const data = await response.json();
+          if (data.message) errorMessage = data.message;
+        } catch {
+          // Fallback to default message
+        }
+        throw new Error(errorMessage);
+      }
+      */
+
+      console.log(`[Schedule] Successfully renamed schedule ${scheduleId}`);
+
+    } catch (error: any) {
+      console.error(`[Schedule] Error renaming schedule:`, error);
+      // Rollback on error
+      setSchedules(previousSchedules);
+      throw error;
+    }
   };
 
   return {
@@ -246,6 +315,7 @@ export const useSchedule = () => {
     updateCourse,
     toggleCourseStatus,
     importCourses,
-    addCourses
+    addCourses,
+    renameSchedule
   };
 };
