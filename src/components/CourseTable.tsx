@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Course } from '../types';
-import { Trash2, CalendarPlus, Edit, ChevronDown, ChevronUp, Search, Download } from 'lucide-react';
+import { Trash2, CalendarPlus, Edit, ChevronDown, ChevronUp, Search, Download, Layers, ChevronRight, FileDown } from 'lucide-react';
 import Scrollable from './Scrollable';
 import ConfirmationModal from './ConfirmationModal';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface CourseTableProps {
   courses: Course[];
-  onToggleStatus?: (id: string) => void; // Optional or unused in this component but kept for interface consistency if needed later
-  onDelete?: (id: string) => void;      // Optional or unused in this component but kept for interface consistency if needed later
+  onToggleStatus?: (id: string) => void;
+  onDelete?: (id: string) => void;
   onBulkDelete?: (ids: string[]) => void;
   onBulkToggleStatus?: (ids: string[]) => void;
   onEdit?: (course: Course) => void;
@@ -27,6 +30,17 @@ const CourseTable: React.FC<CourseTableProps> = ({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedCourseIds, setSelectedCourseIds] = useState<Set<string>>(new Set());
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [idsToDelete, setIdsToDelete] = useState<string[] | null>(null); // New state for group deletion
+  const [isGrouped, setIsGrouped] = useState(() => {
+    const saved = localStorage.getItem('courseTableGrouped');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+
+  // Save grouping preference whenever it changes
+  React.useEffect(() => {
+    localStorage.setItem('courseTableGrouped', JSON.stringify(isGrouped));
+  }, [isGrouped]);
 
   // derived state for conflicts
   const [conflictIds] = useState<Set<string>>(new Set());
@@ -52,6 +66,128 @@ const CourseTable: React.FC<CourseTableProps> = ({
       }
       return 0;
     });
+
+  // Grouping Logic
+  const groupedCourses = React.useMemo(() => {
+    if (!isGrouped) return null;
+
+    const groups: Record<string, Course[]> = {};
+    sortedAndFilteredCourses.forEach(course => {
+      const key = course.name;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(course);
+    });
+
+    // Sort keys (course names) alphabetically
+    const sortedKeys = Object.keys(groups).sort((a, b) => a.localeCompare(b));
+
+    // Initialize all groups as expanded when grouping is first enabled or when filter changes
+    // This is a side effect inside useMemo which is generally discouraged, but for this specific UX requirement
+    // it's cleaner than a useEffect. However, to be React-pure, we should handle this in the toggle handler or useEffect.
+    // We'll leave the state management outside.
+
+    return { groups, sortedKeys };
+  }, [sortedAndFilteredCourses, isGrouped]);
+
+  // Effect to expand all groups by default when grouping is enabled or filter changes
+  React.useEffect(() => {
+    if (isGrouped && groupedCourses) {
+       setExpandedGroups(new Set(groupedCourses.sortedKeys));
+    }
+  }, [isGrouped, filter, courses.length]); // Depend on filter/courses to re-expand when data changes
+
+  const toggleGroup = (groupName: string) => {
+    const newExpanded = new Set(expandedGroups);
+    if (newExpanded.has(groupName)) {
+      newExpanded.delete(groupName);
+    } else {
+      newExpanded.add(groupName);
+    }
+    setExpandedGroups(newExpanded);
+  };
+
+  const handleExportExcel = () => {
+    const data = sortedAndFilteredCourses.map(c => ({
+      Curso: c.name,
+      Grupo: c.group,
+      Sede: c.campus,
+      Profesor: c.professor,
+      Modalidad: c.status,
+      Estado: c.isScheduled ? 'Agendado' : 'Pendiente',
+      Horario: c.sessions.map(s => `${s.day} ${s.startTime}-${s.endTime} (${s.classroom})`).join(', ')
+    }));
+
+    // If grouped, we might want to sort by name first (which is default if sortField is name)
+    // Excel doesn't support "grouping" in the same visual way as PDF/HTML easily without complex layout,
+    // so a flat list sorted by the grouping key is best.
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Cursos");
+    XLSX.writeFile(wb, "cursos_gestion.xlsx");
+  };
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Reporte de Gestión de Cursos", 14, 15);
+    doc.setFontSize(10);
+    doc.text(`Generado: ${new Date().toLocaleDateString()}`, 14, 22);
+
+    const tableColumn = ["Curso", "G", "Sede", "Horario", "Profesor", "Modalidad", "Est."];
+    const tableRows: any[] = [];
+
+    if (isGrouped && groupedCourses) {
+      groupedCourses.sortedKeys.forEach(key => {
+        // Add a group header row
+        tableRows.push([{ content: key, colSpan: 7, styles: { fillColor: [240, 240, 240], fontStyle: 'bold', halign: 'left' } }]);
+
+        groupedCourses.groups[key].forEach(c => {
+           const sessionsStr = c.sessions.map(s => `${s.day} ${s.startTime}-${s.endTime}`).join('\n');
+           tableRows.push([
+             c.name,
+             c.group,
+             c.campus,
+             sessionsStr,
+             c.professor,
+             c.status,
+             c.isScheduled ? 'Agendado' : 'Pendiente'
+           ]);
+        });
+      });
+    } else {
+      sortedAndFilteredCourses.forEach(c => {
+         const sessionsStr = c.sessions.map(s => `${s.day} ${s.startTime}-${s.endTime}`).join('\n');
+         tableRows.push([
+           c.name,
+           c.group,
+           c.campus,
+           sessionsStr,
+           c.professor,
+           c.status,
+           c.isScheduled ? 'Agendado' : 'Pendiente'
+         ]);
+      });
+    }
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 25,
+      styles: { fontSize: 8, cellPadding: 2 },
+      headStyles: { fillColor: [41, 128, 185] },
+      columnStyles: {
+        0: { cellWidth: 40 }, // Curso
+        1: { cellWidth: 10 }, // Grupo
+        2: { cellWidth: 20 }, // Sede
+        3: { cellWidth: 40 }, // Horario
+        4: { cellWidth: 30 }, // Profesor
+        5: { cellWidth: 25 }, // Modalidad
+        6: { cellWidth: 15 }  // Estado
+      }
+    });
+
+    doc.save("cursos_gestion.pdf");
+  };
 
   // Master checkbox logic
   const handleSelectAll = () => {
@@ -103,6 +239,55 @@ const CourseTable: React.FC<CourseTableProps> = ({
           </div>
       );
   };
+
+  const renderCourseRow = (course: Course) => (
+    <tr
+        key={course.id}
+        className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer ${selectedCourseIds.has(course.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''} ${conflictIds.has(course.id) ? 'border-l-4 border-red-500' : ''}`}
+        onClick={() => handleSelectOne(course.id)}
+    >
+      <td className="px-3 py-4">
+        <input
+            type="checkbox"
+            checked={selectedCourseIds.has(course.id)}
+            onChange={() => handleSelectOne(course.id)}
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-offset-gray-800"
+            onClick={(e) => e.stopPropagation()}
+        />
+      </td>
+      <td className="px-3 py-4">
+        <div className="flex flex-col">
+          <span className="text-sm font-medium text-gray-900 dark:text-white">
+              {formatTextAsList(course.name, 25)}
+          </span>
+          <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">Grupo: {course.group}</span>
+        </div>
+      </td>
+      <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+        {formatTextAsList(course.campus, 20)}
+      </td>
+      <td className="px-3 py-4">
+        <div className="text-sm text-gray-900 dark:text-gray-300 space-y-1">
+          {course.sessions.map((session, idx) => (
+            <div key={idx} className="flex gap-2 text-xs whitespace-nowrap">
+              <span className="font-medium w-16 text-gray-700 dark:text-gray-300">{session.day}:</span>
+              <span className="text-gray-600 dark:text-gray-400">{session.startTime} - {session.endTime}</span>
+              <span className="text-gray-500 dark:text-gray-500">({session.classroom})</span>
+            </div>
+          ))}
+        </div>
+      </td>
+      <td className="px-3 py-4 text-sm text-gray-500 dark:text-gray-300">
+        {formatTextAsList(course.professor, 20)}
+      </td>
+      <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+        {formatTextAsList(course.status, 20)}
+      </td>
+      <td className="px-3 py-4 whitespace-nowrap">
+        {getStatusBadge(course.isScheduled)}
+      </td>
+    </tr>
+  );
 
   // Get unique suggestions based on filter
   const suggestions = React.useMemo(() => {
@@ -199,7 +384,38 @@ const CourseTable: React.FC<CourseTableProps> = ({
             </div>
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          {/* Grouping Toggle */}
+          <button
+            onClick={() => setIsGrouped(!isGrouped)}
+            className={`p-1.5 rounded transition-colors ${
+              isGrouped
+                ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-300'
+                : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600'
+            }`}
+            title={isGrouped ? "Desagrupar por curso" : "Agrupar por curso"}
+          >
+            <Layers className="w-5 h-5" />
+          </button>
+
+          {/* Export Options */}
+          <div className="flex items-center border-l border-gray-300 dark:border-gray-600 pl-2 gap-1 mr-2">
+             <button
+                onClick={handleExportExcel}
+                className="p-1.5 rounded text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-900/30 transition-colors"
+                title="Exportar a Excel"
+             >
+                <Download className="w-5 h-5" />
+             </button>
+             <button
+                onClick={handleExportPDF}
+                className="p-1.5 rounded text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 transition-colors"
+                title="Exportar a PDF"
+             >
+                <FileDown className="w-5 h-5" />
+             </button>
+          </div>
+
           {onImport && (
               <button
                   onClick={onImport}
@@ -248,16 +464,23 @@ const CourseTable: React.FC<CourseTableProps> = ({
 
       <ConfirmationModal
         isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
+        onClose={() => {
+            setIsDeleteModalOpen(false);
+            setIdsToDelete(null);
+        }}
         onConfirm={() => {
           if (onBulkDelete) {
-            onBulkDelete(Array.from(selectedCourseIds));
-            setSelectedCourseIds(new Set());
+            const ids = idsToDelete || Array.from(selectedCourseIds);
+            onBulkDelete(ids);
+            if (!idsToDelete) {
+                setSelectedCourseIds(new Set());
+            }
           }
           setIsDeleteModalOpen(false);
+          setIdsToDelete(null);
         }}
         title="Eliminar Cursos"
-        message={`¿Estás seguro de que deseas eliminar ${selectedCount} curso(s)? Esta acción no se puede deshacer.`}
+        message={`¿Estás seguro de que deseas eliminar ${idsToDelete ? idsToDelete.length : selectedCount} curso(s)? Esta acción no se puede deshacer.`}
       />
 
       <div className="w-full">
@@ -305,59 +528,56 @@ const CourseTable: React.FC<CourseTableProps> = ({
           <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
             {sortedAndFilteredCourses.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-3 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                <td colSpan={7} className="px-3 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                   {filter ? 'No se encontraron cursos que coincidan con la búsqueda.' : 'No hay cursos registrados.'}
                 </td>
               </tr>
             ) : (
-              sortedAndFilteredCourses.map((course) => (
-                <tr
-                    key={course.id}
-                    className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer ${selectedCourseIds.has(course.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''} ${conflictIds.has(course.id) ? 'border-l-4 border-red-500' : ''}`}
-                    onClick={() => handleSelectOne(course.id)}
-                >
-                  <td className="px-3 py-4">
-                    <input
-                        type="checkbox"
-                        checked={selectedCourseIds.has(course.id)}
-                        onChange={() => handleSelectOne(course.id)}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-offset-gray-800"
-                        onClick={(e) => e.stopPropagation()}
-                    />
-                  </td>
-                  <td className="px-3 py-4">
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">
-                          {formatTextAsList(course.name, 25)}
-                      </span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">Grupo: {course.group}</span>
-                    </div>
-                  </td>
-                  <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                    {formatTextAsList(course.campus, 20)}
-                  </td>
-                  <td className="px-3 py-4">
-                    <div className="text-sm text-gray-900 dark:text-gray-300 space-y-1">
-                      {course.sessions.map((session, idx) => (
-                        <div key={idx} className="flex gap-2 text-xs whitespace-nowrap">
-                          <span className="font-medium w-16 text-gray-700 dark:text-gray-300">{session.day}:</span>
-                          <span className="text-gray-600 dark:text-gray-400">{session.startTime} - {session.endTime}</span>
-                          <span className="text-gray-500 dark:text-gray-500">({session.classroom})</span>
-                        </div>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-3 py-4 text-sm text-gray-500 dark:text-gray-300">
-                    {formatTextAsList(course.professor, 20)}
-                  </td>
-                  <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                    {formatTextAsList(course.status, 20)}
-                  </td>
-                  <td className="px-3 py-4 whitespace-nowrap">
-                    {getStatusBadge(course.isScheduled)}
-                  </td>
-                </tr>
-              ))
+              isGrouped && groupedCourses ? (
+                groupedCourses.sortedKeys.map(groupName => (
+                  <React.Fragment key={groupName}>
+                    <tr
+                      className="bg-gray-50 dark:bg-gray-700/50 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                      onClick={() => toggleGroup(groupName)}
+                    >
+                        <td colSpan={7} className="px-3 py-2 border-b border-gray-200 dark:border-gray-700">
+                          <div className="flex items-center justify-between w-full">
+                              <div className="flex items-center gap-2">
+                                  {expandedGroups.has(groupName)
+                                    ? <ChevronDown className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                                    : <ChevronRight className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                                  }
+                                  <span className="font-semibold text-gray-900 dark:text-white text-sm">{groupName}</span>
+                                  <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-600 px-2 py-0.5 rounded-full">
+                                    {groupedCourses.groups[groupName].length}
+                                  </span>
+                              </div>
+
+                              <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    const groupIds = groupedCourses.groups[groupName].map(c => c.id);
+                                    setIdsToDelete(groupIds);
+                                    setIsDeleteModalOpen(true);
+                                }}
+                                className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                                title="Eliminar todos los cursos de este grupo"
+                              >
+                                  <Trash2 className="w-4 h-4" />
+                              </button>
+                          </div>
+                        </td>
+                    </tr>
+                    {expandedGroups.has(groupName) && groupedCourses.groups[groupName].map(course => (
+                        renderCourseRow(course)
+                    ))}
+                  </React.Fragment>
+                ))
+              ) : (
+                sortedAndFilteredCourses.map((course) => (
+                  renderCourseRow(course)
+                ))
+              )
             )}
           </tbody>
           </table>
