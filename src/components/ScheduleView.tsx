@@ -92,7 +92,27 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse, o
 
   // Export 3: Visual Grid (Classic Schedule)
   const exportPDFVisual = () => {
-    const doc = new jsPDF('landscape', 'mm', 'a4'); // Landscape for better fit
+    // Calcular altura requerida para evitar truncamiento
+    const margin = 10;
+    const headerHeight = 30;
+    const gridTop = headerHeight + 10;
+    const hourHeight = 12; // Height per hour row
+    const totalHours = END_HOUR - START_HOUR + 1;
+    const contentHeight = gridTop + (totalHours * hourHeight) + margin;
+
+    // Dimensiones base A4 Landscape (297x210 mm)
+    const baseWidth = 297;
+    const baseHeight = 210;
+
+    // Ajustar altura si el contenido excede la página A4
+    const finalHeight = Math.max(baseHeight, contentHeight);
+
+    const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: [baseWidth, finalHeight]
+    });
+
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight(); // We need height for background
 
@@ -129,12 +149,12 @@ const ScheduleView: React.FC<ScheduleViewProps> = ({ schedule, onRemoveCourse, o
     doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
     // Layout Config
-    const margin = 10;
-    const headerHeight = 30;
-    const gridTop = headerHeight + 10;
+    // const margin = 10; // Already defined above
+    // const headerHeight = 30; // Already defined above
+    // const gridTop = headerHeight + 10; // Already defined above
     const timeColWidth = 20;
     const dayColWidth = (pageWidth - margin * 2 - timeColWidth) / 7;
-    const hourHeight = 12; // Height per hour row
+    // const hourHeight = 12; // Already defined above
 
     // Header
     doc.setTextColor(textColor[0], textColor[1], textColor[2]);

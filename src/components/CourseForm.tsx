@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Course, CourseStatus, CourseSession } from '../types';
 import { generateId, DAYS, STATUSES, PREDEFINED_COLORS, DEFAULT_COURSE_COLOR, isValidHex, hexToRgb } from '../utils';
-import { PlusCircle, Clock, MapPin, Save, Edit, Palette, ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { PlusCircle, Clock, MapPin, Save, Edit, Palette, ChevronDown, ChevronUp, Check, Plus, AlertCircle } from 'lucide-react';
 import TimeInput from './TimeInput';
 
 interface CourseFormProps {
@@ -10,6 +10,8 @@ interface CourseFormProps {
   onCancelEdit: () => void;
   courseToEdit?: Course | null;
   setIsDirty?: (isDirty: boolean) => void;
+  customColors?: string[];
+  onAddCustomColor?: (color: string) => void;
 }
 
 const CourseForm: React.FC<CourseFormProps> = ({
@@ -17,7 +19,9 @@ const CourseForm: React.FC<CourseFormProps> = ({
   onUpdateCourse,
   onCancelEdit,
   courseToEdit,
-  setIsDirty
+  setIsDirty,
+  customColors = [],
+  onAddCustomColor
 }) => {
   const [name, setName] = useState('');
   const [campus, setCampus] = useState('');
@@ -29,7 +33,9 @@ const CourseForm: React.FC<CourseFormProps> = ({
   const [status, setStatus] = useState<CourseStatus>('Presencial');
   const [color, setColor] = useState(DEFAULT_COURSE_COLOR);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  // Removed local customColors state
   const [rgb, setRgb] = useState({ r: 0, g: 102, b: 204 }); // Default blue RGB
+  const [colorError, setColorError] = useState<string | null>(null);
 
   const [frequency, setFrequency] = useState<number>(1);
   const [sessions, setSessions] = useState<Omit<CourseSession, 'id'>[]>([
@@ -68,6 +74,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
   // Update RGB when color changes (only if it's a valid hex)
   const handleColorChange = (newColor: string) => {
     setColor(newColor);
+    if (colorError) setColorError(null);
     if (isValidHex(newColor)) {
       const rgbVal = hexToRgb(newColor);
       if (rgbVal) setRgb(rgbVal);
@@ -86,6 +93,20 @@ const CourseForm: React.FC<CourseFormProps> = ({
     };
 
     setColor(`#${toHex(newRgb.r)}${toHex(newRgb.g)}${toHex(newRgb.b)}`.toUpperCase());
+  };
+
+  const handleAddCustomColor = () => {
+    if (!isValidHex(color)) return;
+
+    if (PREDEFINED_COLORS.includes(color) || customColors.includes(color)) {
+      setColorError("Este color ya existe en el sistema");
+      return;
+    }
+
+    if (onAddCustomColor) {
+      onAddCustomColor(color);
+      setColorError(null);
+    }
   };
 
   // Adjust sessions when frequency changes
@@ -351,20 +372,20 @@ const CourseForm: React.FC<CourseFormProps> = ({
 
         {showColorPicker && (
           <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 animate-fadeIn">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-6">
               {/* Palette */}
               <div>
                 <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">
                   Paleta de Colores
                 </label>
-                <div className="grid grid-cols-5 gap-2">
+                <div className="flex flex-wrap gap-2">
                   {PREDEFINED_COLORS.map((c) => (
                     <button
                       key={c}
                       type="button"
                       onClick={() => handleColorChange(c)}
                       className={`w-8 h-8 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform hover:scale-110 flex items-center justify-center ${
-                        color === c ? 'ring-2 ring-offset-2 ring-blue-500 dark:ring-offset-gray-800' : ''
+                        color === c ? 'ring-2 ring-offset-2 ring-blue-500 dark:ring-offset-gray-800 scale-110' : ''
                       }`}
                       style={{ backgroundColor: c }}
                       title={c}
@@ -372,55 +393,91 @@ const CourseForm: React.FC<CourseFormProps> = ({
                       {color === c && <Check className="w-4 h-4 text-white drop-shadow-md" />}
                     </button>
                   ))}
+                  {customColors.map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => handleColorChange(c)}
+                      className={`w-8 h-8 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform hover:scale-110 flex items-center justify-center ${
+                        color === c ? 'ring-2 ring-offset-2 ring-blue-500 dark:ring-offset-gray-800 scale-110' : ''
+                      }`}
+                      style={{ backgroundColor: c }}
+                      title={c}
+                    >
+                      {color === c && <Check className="w-4 h-4 text-white drop-shadow-md" />}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={handleAddCustomColor}
+                    className="w-8 h-8 rounded-full border-2 border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:opacity-80 transition-all duration-300 flex items-center justify-center shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    title="Agregar color actual a la paleta"
+                    aria-label="Agregar color personalizado"
+                  >
+                    <Plus className="w-4 h-4 text-gray-800 dark:text-gray-200" />
+                  </button>
                 </div>
               </div>
 
               {/* Custom Color Inputs & Preview */}
-              <div className="space-y-4">
-                <div>
-                   <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">
-                    Personalizar
-                  </label>
-                  <div className="flex gap-4 items-center">
+              <div className="border-t border-gray-200 dark:border-gray-600 pt-4">
+                 <div className="flex justify-between items-center mb-3">
+                    <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Personalizar
+                    </label>
+                    {colorError && (
+                        <div className="flex items-center gap-1.5 text-red-600 bg-red-50 dark:bg-red-900/30 px-3 py-1 rounded-md border border-red-200 dark:border-red-800/50 animate-pulse shadow-sm">
+                            <AlertCircle className="w-3.5 h-3.5" />
+                            <span className="text-xs font-bold tracking-tight">
+                                {colorError}
+                            </span>
+                        </div>
+                    )}
+                 </div>
+                  <div className="flex flex-col sm:flex-row gap-4">
                     {/* Preview */}
-                    <div className="relative group cursor-pointer">
-                      <div
-                          className="w-16 h-16 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 flex-shrink-0 transition-colors duration-300"
-                          style={{ backgroundColor: color }}
-                          onClick={() => document.getElementById('native-color-picker')?.click()}
-                          title="Click para abrir selector de color"
-                      ></div>
-                       <input
-                          id="native-color-picker"
-                          type="color"
-                          value={color}
-                          onChange={(e) => handleColorChange(e.target.value)}
-                          className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
-                         <Palette className="w-6 h-6 text-white drop-shadow-md" />
-                      </div>
-                    </div>
+                    <div className={`relative group cursor-pointer self-center sm:self-start transition-all duration-300 ${colorError ? 'ring-4 ring-red-400 rounded-lg animate-pulse' : ''}`}>
+                       <div
+                           className={`w-full sm:w-16 h-16 rounded-lg shadow-sm border flex-shrink-0 transition-colors duration-300 aspect-square sm:aspect-auto ${colorError ? 'border-red-500' : 'border-gray-200 dark:border-gray-600'}`}
+                           style={{ backgroundColor: color }}
+                           onClick={() => document.getElementById('native-color-picker')?.click()}
+                           title="Click para abrir selector de color"
+                       ></div>
+                        <input
+                           id="native-color-picker"
+                           type="color"
+                           value={color}
+                           onChange={(e) => handleColorChange(e.target.value)}
+                           className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                       />
+                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Palette className="w-6 h-6 text-white drop-shadow-md" />
+                       </div>
+                     </div>
 
-                    <div className="flex-1 space-y-2">
+                    <div className="flex-1 space-y-3">
                         {/* Hex Input */}
                         <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-500 dark:text-gray-400 w-8">HEX</span>
+                            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-8">HEX</span>
                             <div className="relative flex-1">
-                                <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500">#</span>
+                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 select-none">#</span>
                                 <input
                                     type="text"
                                     value={color.replace('#', '')}
                                     onChange={(e) => handleColorChange(`#${e.target.value}`)}
                                     maxLength={6}
-                                    className="w-full pl-6 pr-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white uppercase font-mono"
+                                    className={`w-full pl-7 pr-3 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-2 bg-white dark:bg-gray-700 dark:text-white uppercase font-mono tracking-wider shadow-sm transition-colors ${
+                                        colorError
+                                            ? 'border-red-500 focus:ring-red-500 text-red-600'
+                                            : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
+                                    }`}
                                 />
                             </div>
                         </div>
 
                         {/* RGB Inputs */}
                         <div className="flex items-center gap-2">
-                             <span className="text-xs text-gray-500 dark:text-gray-400 w-8">RGB</span>
+                             <span className="text-xs font-medium text-gray-500 dark:text-gray-400 w-8">RGB</span>
                              <div className="grid grid-cols-3 gap-2 flex-1">
                                 <input
                                     type="number"
@@ -428,8 +485,13 @@ const CourseForm: React.FC<CourseFormProps> = ({
                                     onChange={(e) => handleRgbChange('r', e.target.value)}
                                     min="0"
                                     max="255"
-                                    className="w-full px-1 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white text-center"
+                                    className={`w-full px-1 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-2 bg-white dark:bg-gray-700 dark:text-white text-center shadow-sm ${
+                                        colorError
+                                            ? 'border-red-500 focus:ring-red-500 text-red-600'
+                                            : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
+                                    }`}
                                     title="Red"
+                                    placeholder="R"
                                 />
                                 <input
                                     type="number"
@@ -437,8 +499,13 @@ const CourseForm: React.FC<CourseFormProps> = ({
                                     onChange={(e) => handleRgbChange('g', e.target.value)}
                                     min="0"
                                     max="255"
-                                    className="w-full px-1 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white text-center"
+                                    className={`w-full px-1 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-2 bg-white dark:bg-gray-700 dark:text-white text-center shadow-sm ${
+                                        colorError
+                                            ? 'border-red-500 focus:ring-red-500 text-red-600'
+                                            : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
+                                    }`}
                                     title="Green"
+                                    placeholder="G"
                                 />
                                 <input
                                     type="number"
@@ -446,14 +513,18 @@ const CourseForm: React.FC<CourseFormProps> = ({
                                     onChange={(e) => handleRgbChange('b', e.target.value)}
                                     min="0"
                                     max="255"
-                                    className="w-full px-1 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white text-center"
+                                    className={`w-full px-1 py-1.5 text-sm border rounded-md focus:outline-none focus:ring-2 bg-white dark:bg-gray-700 dark:text-white text-center shadow-sm ${
+                                        colorError
+                                            ? 'border-red-500 focus:ring-red-500 text-red-600'
+                                            : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
+                                    }`}
                                     title="Blue"
+                                    placeholder="B"
                                 />
                              </div>
                         </div>
                     </div>
                   </div>
-                </div>
               </div>
             </div>
           </div>

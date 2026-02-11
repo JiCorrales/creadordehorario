@@ -54,6 +54,7 @@ function App() {
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isHtmlImportOpen, setIsHtmlImportOpen] = useState(false);
   const [isManualOpen, setIsManualOpen] = useState(false);
+  const [customColors, setCustomColors] = useState<string[]>([]);
 
   // Auto-create initial schedule if none exists on mount
   useEffect(() => {
@@ -184,6 +185,10 @@ function App() {
     }
   };
 
+  const handleAddCustomColor = (color: string) => {
+    setCustomColors(prev => [...prev, color]);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6 font-sans transition-colors duration-200">
       <div className="max-w-7xl mx-auto">
@@ -249,6 +254,8 @@ function App() {
                 onAddCourse={handleAddCourse}
                 onUpdateCourse={handleUpdateCourse}
                 onCancelEdit={() => {}}
+                customColors={customColors}
+                onAddCustomColor={handleAddCustomColor}
               />
             </div>
 
@@ -287,6 +294,8 @@ function App() {
               onCancelEdit={handleCancelEdit}
               courseToEdit={courseToEdit}
               setIsDirty={setIsFormDirty}
+              customColors={customColors}
+              onAddCustomColor={handleAddCustomColor}
             />
           )}
         </Modal>
