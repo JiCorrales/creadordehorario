@@ -19,8 +19,8 @@ const STATUS_MAP: Record<string, CourseStatus> = {
     'Presencial': 'Presencial',
     'Virtual': 'Virtual',
     'Semipresencial': 'Semipresencial',
-    'Bimodal': 'Semipresencial',
-    'Regular': 'Presencial'
+    'Bimodal': 'Bimodal',
+    'Regular': 'Regular'
 };
 
 export const parseTecHtml = (htmlContent: string): ScrapedCourse[] => {
@@ -152,6 +152,8 @@ const parseStudentProfile = (doc: Document): ScrapedCourse[] => {
         const classroom = cells[5].textContent?.trim() || 'Sin aula';
         const professor = cells[6].textContent?.trim() || 'Por asignar';
         const quota = parseInt(cells[7]?.textContent?.trim() || '0');
+        const statusText = cells[9]?.textContent?.trim() || 'Presencial';
+        const status: CourseStatus = STATUS_MAP[statusText] || 'Presencial';
         const reserved = cells[10]?.textContent?.trim() === '1';
 
         // Parse Schedule
@@ -192,7 +194,7 @@ const parseStudentProfile = (doc: Document): ScrapedCourse[] => {
             credits: credits,
             quota: quota,
             reserved: reserved,
-            status: 'Presencial',
+            status: status,
             sessions: sessions,
             color: DEFAULT_COURSE_COLOR
         });

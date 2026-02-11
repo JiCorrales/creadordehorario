@@ -1,4 +1,4 @@
-export type CourseStatus = 'Presencial' | 'Virtual' | 'Semipresencial' | 'Asistido';
+export type CourseStatus = 'Presencial' | 'Virtual' | 'Semipresencial' | 'Asistido' | 'Bimodal' | 'Regular';
 
 export interface CourseSession {
   id: string;
