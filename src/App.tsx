@@ -195,7 +195,10 @@ function App() {
         <header className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Calendar className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+            <h1
+              className="text-3xl font-bold text-gray-800 dark:text-white"
+              style={{fontFamily: '"open-sans", sans-serif, font-weight: 400, font-style: normal;'}}
+            >
               Creador de Horarios Universitarios
             </h1>
           </div>
