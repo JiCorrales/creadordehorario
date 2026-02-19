@@ -1,6 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { Upload, FileText, Check, AlertTriangle, ChevronDown, ChevronRight, Search, Loader } from 'lucide-react';
-import { ScrapedCourse, parseTecHtml } from '../services/scrapingService';
+import {
+    ScrapedCourse,
+    parseTecHtmlWithReport,
+    createConsoleScrapingLogger,
+    ScrapingStructureError
+} from '../services/scrapingService';
 import { Course } from '../types';
 import { generateId } from '../utils';
 import Scrollable from './Scrollable';
@@ -36,14 +41,14 @@ const ImportHtmlModal: React.FC<ImportHtmlModalProps> = ({ isOpen, onClose, onIm
             processHtml(text);
         } catch (err) {
             console.error(err);
-            setError('Error al leer el archivo. Inténtalo de nuevo.');
+            setError('Error al leer el archivo. Intentalo de nuevo.');
             setLoading(false);
         }
     };
 
     const handlePasteProcess = () => {
         if (!htmlInput.trim()) {
-            setError('Por favor pega el código HTML primero.');
+            setError('Por favor pega el codigo HTML primero.');
             return;
         }
         setLoading(true);
@@ -56,16 +61,56 @@ const ImportHtmlModal: React.FC<ImportHtmlModalProps> = ({ isOpen, onClose, onIm
 
     const processHtml = (html: string) => {
         try {
-            const courses = parseTecHtml(html);
+            const { courses, report } = parseTecHtmlWithReport(html, {
+                logger: createConsoleScrapingLogger(),
+                throwOnStructureError: true
+            });
+
+            console.groupCollapsed(`[Scraping][${report.attemptId}] Resumen de intento`);
+            console.info('Fuente detectada:', report.source);
+            console.info('Filas analizadas:', report.totalRows);
+            console.info('Cursos extraidos:', report.parsedCourses);
+            console.info('Horarios encontrados:', report.schedulesFound);
+            console.info('Horarios no encontrados:', report.schedulesMissing);
+            if (report.schedulesMissing > 0) {
+                console.table(
+                    report.scheduleAttempts
+                        .filter(attempt => !attempt.found)
+                        .map(attempt => ({
+                            courseCode: attempt.courseCode,
+                            group: attempt.group,
+                            reason: attempt.reason,
+                            rawSchedule: attempt.rawSchedule,
+                            selector: attempt.selector
+                        }))
+                );
+            }
+            if (report.issues.length > 0) {
+                console.warn('Issues de scraping:', report.issues);
+            }
+            console.groupEnd();
+
             if (courses.length === 0) {
-                setError('No se encontraron cursos en el código. Asegúrate de estar copiando el código fuente de la página de matrícula del TEC.');
+                if (report.source === 'unknown') {
+                    setError('No se detecto una estructura de HTML compatible con el scraper.');
+                } else {
+                    setError('Se detecto la estructura, pero no se pudieron extraer cursos con horarios validos.');
+                }
             } else {
                 setScrapedData(courses);
                 setStep('preview');
+
+                if (report.schedulesMissing > 0) {
+                    setError(`Se importaron cursos, pero ${report.schedulesMissing} horarios no pudieron parsearse. Revisa la consola para detalle.`);
+                }
             }
         } catch (err) {
              console.error(err);
-             setError('Error al procesar el HTML.');
+             if (err instanceof ScrapingStructureError) {
+                 setError('No se encontro una estructura valida (expediente o matricula) en el HTML proporcionado.');
+             } else {
+                 setError('Error al procesar el HTML.');
+             }
         } finally {
             setLoading(false);
         }
@@ -195,7 +240,7 @@ const ImportHtmlModal: React.FC<ImportHtmlModalProps> = ({ isOpen, onClose, onIm
                                             onClick={() => setInputMode('paste')}
                                             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${inputMode === 'paste' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-200' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
                                         >
-                                            Pegar Código
+                                            Pegar Codigo
                                         </button>
                                     </div>
 
@@ -203,10 +248,10 @@ const ImportHtmlModal: React.FC<ImportHtmlModalProps> = ({ isOpen, onClose, onIm
                                         <div className="text-center">
                                             <Upload className="w-16 h-16 text-gray-400 mb-4 mx-auto" />
                                             <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
-                                                Arrastra tu archivo <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">.html</code> aquí
+                                                Arrastra tu archivo <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">.html</code> aqui
                                             </p>
                                             <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
-                                                Ve a la página de matrícula del TEC (<code>https://tec-appsext.itcr.ac.cr/...</code>), guarda la página (Ctrl+S) y súbela aquí.
+                                                Ve a la pagina de matricula del TEC (<code>https://tec-appsext.itcr.ac.cr/...</code>), guarda la pagina (Ctrl+S) y subela aqui.
                                             </p>
                                             <label className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md cursor-pointer transition-colors inline-block">
                                                 Seleccionar Archivo
@@ -223,14 +268,14 @@ const ImportHtmlModal: React.FC<ImportHtmlModalProps> = ({ isOpen, onClose, onIm
                                             <textarea
                                                 value={htmlInput}
                                                 onChange={e => setHtmlInput(e.target.value)}
-                                                placeholder="Pega aquí el código fuente (Ctrl+U, Ctrl+A, Ctrl+C en la página del TEC)..."
+                                                placeholder="Pega aqui el codigo fuente (Ctrl+U, Ctrl+A, Ctrl+C en la pagina del TEC)..."
                                                 className="flex-1 w-full p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-sm font-mono focus:ring-2 focus:ring-blue-500 mb-4 resize-none dark:text-white"
                                             />
                                             <button
                                                 onClick={handlePasteProcess}
                                                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition-colors self-end"
                                             >
-                                                Procesar Código
+                                                Procesar Codigo
                                             </button>
                                         </div>
                                     )}
@@ -246,12 +291,19 @@ const ImportHtmlModal: React.FC<ImportHtmlModalProps> = ({ isOpen, onClose, onIm
                         </div>
                     ) : (
                         <div className="h-full flex flex-col">
+                            {error && (
+                                <div className="mb-4 flex items-center gap-2 text-yellow-700 dark:text-yellow-300 bg-yellow-50 dark:bg-yellow-900/20 px-4 py-2 rounded">
+                                    <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+                                    <span className="text-sm">{error}</span>
+                                </div>
+                            )}
+
                             <div className="flex justify-between items-center mb-4 gap-4">
                                 <div className="relative flex-1">
                                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                                     <input
                                         type="text"
-                                        placeholder="Filtrar por nombre, código o profesor..."
+                                        placeholder="Filtrar por nombre, codigo o profesor..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                         className="w-full pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
@@ -265,7 +317,7 @@ const ImportHtmlModal: React.FC<ImportHtmlModalProps> = ({ isOpen, onClose, onIm
                         <Scrollable className="flex-1 border border-gray-200 dark:border-gray-700 rounded-lg">
                             {groupedCourses.length === 0 ? (
                                 <div className="p-8 text-center text-gray-500">
-                                    No se encontraron resultados para tu búsqueda.
+                                    No se encontraron resultados para tu busqueda.
                                 </div>
                             ) : (
                                     groupedCourses.map(([key, group]) => {
